@@ -12,7 +12,6 @@ import {
   Linkedin,
   Github,
   Mail,
-  ExternalLink,
   Terminal,
   Sparkles,
   ChevronDown,
@@ -20,13 +19,13 @@ import {
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useRef } from "react";
+import Link from "next/link";
 
 export default function Home() {
   const heroRef = useRef(null);
@@ -40,6 +39,26 @@ export default function Home() {
 
   return (
     <div className="bg-zinc-950 text-zinc-50 overflow-x-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Person",
+            name: "Agung Denisa Bekam",
+            url: "https://agungdenisa.com",
+            jobTitle: "Co-Founder & CTO",
+            worksFor: {
+              "@type": "Organization",
+              name: "AI WorkLabs",
+            },
+            sameAs: [
+              "https://www.linkedin.com/in/agung78/",
+              "https://github.com/Agung78/",
+            ],
+          }),
+        }}
+      />
       <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-zinc-950/70 border-b border-zinc-800/50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <motion.div
@@ -80,13 +99,15 @@ export default function Home() {
             >
               Timeline
             </a>
-            <Button
-              size="sm"
-              className="bg-emerald-500 hover:bg-emerald-600 text-zinc-950 font-semibold"
-            >
-              <Download className="w-4 h-4 mr-2" />
-              Resume
-            </Button>
+            <Link href="https://drive.google.com/file/d/18SMm2Z7P9GogRb24KoHDqxXgWRPjWz-A/view?usp=sharing">
+              <Button
+                size="sm"
+                className="bg-emerald-500 hover:bg-emerald-600 text-zinc-950 font-semibold"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                Resume
+              </Button>
+            </Link>
           </motion.div>
         </div>
       </nav>
@@ -665,7 +686,7 @@ export default function Home() {
                 <h3 className="text-2xl font-bold mb-1">
                   Engineer/Analyst Fullstack
                 </h3>
-                <p className="text-zinc-400">AIA (Bali/Hybrid)</p>
+                <p className="text-zinc-400">AIA Singapore</p>
               </div>
             </motion.div>
 
@@ -702,7 +723,7 @@ export default function Home() {
                   Assistant Professor & Instructor
                 </h3>
                 <p className="text-zinc-400">
-                  Universitas Mikroskil & Hacktiv8
+                  Universitas Mikroskil & Timedoor Academy
                 </p>
               </div>
             </motion.div>
@@ -727,7 +748,7 @@ export default function Home() {
 
             <div className="flex items-center gap-6">
               <a
-                href="https://linkedin.com"
+                href="https://www.linkedin.com/in/agung78/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-zinc-400 hover:text-emerald-400 transition-colors duration-300"
@@ -735,7 +756,7 @@ export default function Home() {
                 <Linkedin className="w-5 h-5" />
               </a>
               <a
-                href="https://github.com"
+                href="https://github.com/Agung78/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-zinc-400 hover:text-emerald-400 transition-colors duration-300"
@@ -743,7 +764,7 @@ export default function Home() {
                 <Github className="w-5 h-5" />
               </a>
               <a
-                href="mailto:contact@example.com"
+                href="mailto:agungmethodist78@gmail.com"
                 className="text-zinc-400 hover:text-emerald-400 transition-colors duration-300"
               >
                 <Mail className="w-5 h-5" />
@@ -752,7 +773,8 @@ export default function Home() {
           </div>
 
           <div className="mt-8 pt-8 border-t border-zinc-800/50 text-center text-sm text-zinc-600">
-            © 2025 Mas Agung Denisa Bekam. All rights reserved.
+            © {new Date().getFullYear()} Mas Agung Denisa Bekam. All rights
+            reserved.
           </div>
         </div>
       </footer>
