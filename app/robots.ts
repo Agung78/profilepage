@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://agungdenisa.com/sitemap.xml", // Replace with actual domain
+    sitemap: "https://agoeng.is-a.fun/", // Replace with actual domain
   };
 }

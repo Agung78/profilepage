@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://agungdenisa.com", // Replace with actual domain if known, or use localhost for now/placeholder
+    url: "https://agoeng.is-a.fun/", // Replace with actual domain if known, or use localhost for now/placeholder
     title: "Agung Denisa Bekam - Full-Stack & Data Engineer",
     description:
       "Senior Full-Stack Engineer and CTO specializing in Data Engineering and Enterprise Architecture.",
