@@ -46,7 +46,7 @@ export default function Home() {
             "@context": "https://schema.org",
             "@type": "Person",
             name: "Agung Denisa Bekam",
-            url: "https://agungdenisa.com",
+            url: "https://agoeng.is-a.fun/",
             jobTitle: "Co-Founder & CTO",
             worksFor: {
               "@type": "Organization",
