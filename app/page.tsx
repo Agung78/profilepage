@@ -319,7 +319,7 @@ export default function Home() {
               transition={{ delay: 0.1 }}
             >
               <Card className="bg-zinc-900/50 border-emerald-900/20 backdrop-blur overflow-hidden group hover:border-emerald-500/40 transition-all duration-300">
-                <div className="grid lg:grid-cols-2 gap-0">
+                <div className="grid lg:grid-cols-2 gap-0 cursor-pointer">
                   <div className="bg-gradient-to-br from-emerald-950/30 to-zinc-950/30 p-12 flex items-center justify-center relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent group-hover:from-emerald-500/10 transition-all duration-300" />
                     <Code2 className="w-32 h-32 text-emerald-400/50 relative z-10" />
@@ -327,7 +327,7 @@ export default function Home() {
                   <div className="p-12 space-y-6">
                     <div>
                       <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 mb-4">
-                        AIA
+                        AIA Singapore
                       </Badge>
                       <h3 className="text-3xl font-bold mb-2">
                         PayEZ Fintech Re-Platform
@@ -381,7 +381,7 @@ export default function Home() {
               transition={{ delay: 0.2 }}
             >
               <Card className="bg-zinc-900/50 border-blue-900/20 backdrop-blur overflow-hidden group hover:border-blue-500/40 transition-all duration-300">
-                <div className="grid lg:grid-cols-2 gap-0">
+                <div className="grid lg:grid-cols-2 gap-0 cursor-pointer">
                   <div className="bg-gradient-to-br from-blue-950/30 to-zinc-950/30 p-12 flex items-center justify-center relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent group-hover:from-blue-500/10 transition-all duration-300" />
                     <Database className="w-32 h-32 text-blue-400/50 relative z-10" />
@@ -444,7 +444,7 @@ export default function Home() {
               transition={{ delay: 0.3 }}
             >
               <Card className="bg-gradient-to-br from-emerald-950/20 via-zinc-900/50 to-blue-950/20 border-emerald-900/30 backdrop-blur overflow-hidden group hover:border-emerald-500/50 transition-all duration-300">
-                <div className="p-12 text-center space-y-6">
+                <div className="p-12 text-center space-y-6 cursor-pointer">
                   <Sparkles className="w-16 h-16 text-emerald-400 mx-auto" />
                   <div>
                     <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 mb-4">
@@ -489,7 +489,7 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
             >
-              <Card className="bg-zinc-900/50 border-emerald-900/20 backdrop-blur p-6 h-full">
+              <Card className="bg-zinc-900/50 border-emerald-900/20 backdrop-blur p-6 h-full cursor-pointer hover:border-emerald-500/50 transition-all duration-300">
                 <Code2 className="w-10 h-10 text-emerald-400 mb-4" />
                 <h3 className="text-xl font-bold mb-4">Front-End</h3>
                 <div className="flex flex-wrap gap-2">
@@ -533,7 +533,7 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
             >
-              <Card className="bg-zinc-900/50 border-blue-900/20 backdrop-blur p-6 h-full">
+              <Card className="bg-zinc-900/50 border-blue-900/20 backdrop-blur p-6 h-full cursor-pointer hover:border-blue-500/40 transition-all duration-300">
                 <Database className="w-10 h-10 text-blue-400 mb-4" />
                 <h3 className="text-xl font-bold mb-4">Data Engineering</h3>
                 <div className="flex flex-wrap gap-2">
@@ -571,7 +571,7 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ delay: 0.3 }}
             >
-              <Card className="bg-zinc-900/50 border-emerald-900/20 backdrop-blur p-6 h-full">
+              <Card className="bg-zinc-900/50 border-emerald-900/20 backdrop-blur p-6 h-full cursor-pointer hover:border-emerald-500/50 transition-all duration-300">
                 <Terminal className="w-10 h-10 text-emerald-400 mb-4" />
                 <h3 className="text-xl font-bold mb-4">Backend</h3>
                 <div className="flex flex-wrap gap-2">
@@ -609,7 +609,7 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ delay: 0.4 }}
             >
-              <Card className="bg-zinc-900/50 border-blue-900/20 backdrop-blur p-6 h-full">
+              <Card className="bg-zinc-900/50 border-blue-900/20 backdrop-blur p-6 h-full cursor-pointer hover:border-blue-500/40 transition-all duration-300">
                 <Zap className="w-10 h-10 text-blue-400 mb-4" />
                 <h3 className="text-xl font-bold mb-4">Tools & DevOps</h3>
                 <div className="flex flex-wrap gap-2">
@@ -662,7 +662,7 @@ export default function Home() {
               className="relative pl-20"
             >
               <div className="absolute left-5 top-0 w-6 h-6 rounded-full bg-emerald-500 border-4 border-zinc-950" />
-              <div className="bg-zinc-900/50 border border-emerald-900/20 rounded-lg p-6 backdrop-blur">
+              <div className="bg-zinc-900/50 border border-emerald-900/20 rounded-lg p-6 backdrop-blur cursor-pointer hover:border-emerald-500/50 transition-all duration-300">
                 <div className="text-emerald-400 font-mono text-sm mb-2">
                   2025 — Present
                 </div>
@@ -679,7 +679,7 @@ export default function Home() {
               className="relative pl-20"
             >
               <div className="absolute left-5 top-0 w-6 h-6 rounded-full bg-blue-500 border-4 border-zinc-950" />
-              <div className="bg-zinc-900/50 border border-blue-900/20 rounded-lg p-6 backdrop-blur">
+              <div className="bg-zinc-900/50 border border-blue-900/20 rounded-lg p-6 backdrop-blur cursor-pointer hover:border-blue-500/50 transition-all duration-300">
                 <div className="text-blue-400 font-mono text-sm mb-2">
                   2022 — Present
                 </div>
@@ -698,12 +698,12 @@ export default function Home() {
               className="relative pl-20"
             >
               <div className="absolute left-5 top-0 w-6 h-6 rounded-full bg-emerald-500 border-4 border-zinc-950" />
-              <div className="bg-zinc-900/50 border border-emerald-900/20 rounded-lg p-6 backdrop-blur">
+              <div className="bg-zinc-900/50 border border-emerald-900/20 rounded-lg p-6 backdrop-blur cursor-pointer hover:border-emerald-500/50 transition-all duration-300">
                 <div className="text-emerald-400 font-mono text-sm mb-2">
                   2021 — 2022
                 </div>
                 <h3 className="text-2xl font-bold mb-1">Data Engineer</h3>
-                <p className="text-zinc-400">AIA Singapore (Contract)</p>
+                <p className="text-zinc-400">AIA Singapore</p>
               </div>
             </motion.div>
 
@@ -715,7 +715,7 @@ export default function Home() {
               className="relative pl-20"
             >
               <div className="absolute left-5 top-0 w-6 h-6 rounded-full bg-blue-500 border-4 border-zinc-950" />
-              <div className="bg-zinc-900/50 border border-blue-900/20 rounded-lg p-6 backdrop-blur">
+              <div className="bg-zinc-900/50 border border-blue-900/20 rounded-lg p-6 backdrop-blur cursor-pointer hover:border-blue-500/50 transition-all duration-300">
                 <div className="text-blue-400 font-mono text-sm mb-2">
                   2018 — 2021
                 </div>
