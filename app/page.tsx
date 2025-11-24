@@ -45,8 +45,8 @@ export default function Home() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Person",
-            name: "Agung Denisa Bekam",
-            url: "https://agoeng.is-a.fun/",
+            name: "Mas Agung Denisa Bekam",
+            url: "https://agoengdenisa.vercel.app/",
             jobTitle: "Co-Founder & CTO",
             worksFor: {
               "@type": "Organization",
