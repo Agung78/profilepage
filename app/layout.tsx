@@ -10,8 +10,8 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Agung Denisa Bekam - Full-Stack & Data Engineer",
-    template: "%s | Agung Denisa Bekam",
+    default: "Mas Agung Denisa Bekam",
+    template: "%s | Mas Agung Denisa Bekam",
   },
   description:
     "Senior Full-Stack Engineer and CTO specializing in Data Engineering, Enterprise Architecture, and Scalable Systems. Expert in Next.js, Python, and Azure.",
@@ -26,25 +26,18 @@ export const metadata: Metadata = {
     "Azure Databricks",
     "PySpark",
     "Web Development",
-    "Agung Denisa Bekam",
+    "Mas Agung Denisa Bekam",
   ],
-  authors: [{ name: "Agung Denisa Bekam" }],
-  creator: "Agung Denisa Bekam",
+  authors: [{ name: "Mas Agung Denisa Bekam" }],
+  creator: "Mas Agung Denisa Bekam",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://agoeng.is-a.fun/", // Replace with actual domain if known, or use localhost for now/placeholder
-    title: "Agung Denisa Bekam - Full-Stack & Data Engineer",
+    url: "https://agoengdenisa.vercel.app/", // Replace with actual domain if known, or use localhost for now/placeholder
+    title: "Mas Agung Denisa Bekam - Full-Stack & Data Engineer",
     description:
       "Senior Full-Stack Engineer and CTO specializing in Data Engineering and Enterprise Architecture.",
-    siteName: "Agung Denisa Bekam Portfolio",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Agung Denisa Bekam - Full-Stack & Data Engineer",
-    description:
-      "Senior Full-Stack Engineer and CTO specializing in Data Engineering and Enterprise Architecture.",
-    creator: "@Agung78", // Assuming from GitHub handle, adjust if known
+    siteName: "Mas Agung Denisa Bekam Portfolio",
   },
   robots: {
     index: true,
@@ -56,6 +49,9 @@ export const metadata: Metadata = {
       "max-image-preview": "large",
       "max-snippet": -1,
     },
+  },
+  icons: {
+    icon: "/favicon.ico",
   },
 };
 

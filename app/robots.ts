@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://agoeng.is-a.fun/", // Replace with actual domain
+    sitemap: "https://agoengdenisa.vercel.app/", // Replace with actual domain
   };
 }
