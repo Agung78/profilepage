@@ -19,7 +19,29 @@ const config: Config = {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      fontFamily: {
+        sans: ['var(--font-inter)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      },
       colors: {
+        /* Editorial palette. Every value below is >= 4.5:1 on the ink base. */
+        ink: {
+          DEFAULT: '#08080D',
+          raised: '#0F0F16',
+          sunken: '#050508',
+          line: '#22222C',
+        },
+        paper: '#F5F3EE',
+        subtle: '#8B8B96',
+        mint: {
+          DEFAULT: '#3DDC97',
+          soft: '#7BEFC0',
+          deep: '#0C3527',
+        },
+        signal: {
+          DEFAULT: '#4EA8F5',
+          soft: '#9BCDFF',
+          deep: '#0D2438',
+        },
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {
@@ -38,8 +60,12 @@ const config: Config = {
           DEFAULT: 'hsl(var(--secondary))',
           foreground: 'hsl(var(--secondary-foreground))',
         },
+        /* `muted` carries the editorial body-text colour; the shadcn
+           primitives only ever reference `muted-foreground`, so both live
+           on one key rather than colliding. */
         muted: {
-          DEFAULT: 'hsl(var(--muted))',
+          DEFAULT: '#B5B5C0',
+          surface: 'hsl(var(--muted))',
           foreground: 'hsl(var(--muted-foreground))',
         },
         accent: {
