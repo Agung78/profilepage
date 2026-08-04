@@ -389,3 +389,90 @@ export const navItems = [
   { href: "#journey", label: "Journey" },
   { href: "#contact", label: "Contact" },
 ] as const;
+
+/**
+ * Stage-by-stage flow behind each case study, used to draw its system diagram.
+ * Every stage label restates something already claimed in `caseStudies` above —
+ * these are a visual index of the prose, never a new claim.
+ *
+ * `lines` is pre-wrapped because the diagram renders SVG text, which has no
+ * automatic wrapping.
+ */
+export type SystemFlow = {
+  /** Lowercase strip under the diagram. */
+  caption: string;
+  stages: readonly {
+    lines: readonly string[];
+    /** `accent` marks the stage that did the work. */
+    accent?: boolean;
+  }[];
+};
+
+export const systemFlows: Record<CaseStudy["icon"], SystemFlow> = {
+  code: {
+    caption: "legacy → re-platform",
+    stages: [
+      { lines: ["Legacy AEM", "Java gateway"] },
+      { lines: ["Next.js +", "Storybook"], accent: true },
+      { lines: ["UOB TMRW /", "OCBC rails"] },
+    ],
+  },
+  database: {
+    caption: "batch pipeline",
+    stages: [
+      { lines: ["PL/SQL stored", "procedures"] },
+      { lines: ["Azure Databricks", "PySpark"], accent: true },
+      { lines: ["Hours,", "not weeks"] },
+    ],
+  },
+  cloud: {
+    caption: "systems → platform",
+    stages: [
+      { lines: ["Product", "systems"] },
+      { lines: ["GCP", "infrastructure"], accent: true },
+      { lines: ["Monitored", "security posture"] },
+    ],
+  },
+  wifi: {
+    caption: "edge → secure portal",
+    stages: [
+      { lines: ["User /", "device"] },
+      { lines: ["Vue + NestJS", "captive portal"], accent: true },
+      { lines: ["Authenticated", "network"] },
+    ],
+  },
+};
+
+/**
+ * Capability constellation. Positions are fixed in a 520×320 viewBox and the
+ * adjacency is symmetric — hovering a domain emphasises the domains it actually
+ * shares work with (front-end feeds analytics tagging, data feeds AI tooling,
+ * and so on).
+ *
+ * Keyed by `stackGroups[].title`, so the groups themselves stay untouched.
+ */
+export const domainNodes: Record<
+  string,
+  { x: number; y: number; short: string }
+> = {
+  "Front-End": { x: 110, y: 58, short: "FE" },
+  "Back-End": { x: 255, y: 128, short: "BE" },
+  "Data & Cloud": { x: 400, y: 62, short: "Data" },
+  "Security & DevOps": { x: 410, y: 208, short: "Sec" },
+  "AI Tooling": { x: 185, y: 216, short: "AI" },
+  Analytics: { x: 62, y: 148, short: "Anl" },
+};
+
+export const domainLinks: Record<string, readonly string[]> = {
+  "Front-End": ["Back-End", "Analytics"],
+  "Back-End": ["Front-End", "Data & Cloud", "Security & DevOps", "AI Tooling"],
+  "Data & Cloud": [
+    "Back-End",
+    "Security & DevOps",
+    "AI Tooling",
+    "Analytics",
+  ],
+  "Security & DevOps": ["Back-End", "Data & Cloud"],
+  "AI Tooling": ["Back-End", "Data & Cloud"],
+  Analytics: ["Front-End", "Data & Cloud"],
+};

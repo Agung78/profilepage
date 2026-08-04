@@ -6,10 +6,12 @@ import { CaseStudy } from "@/components/case-study";
 import { ContactCard, SocialRow } from "@/components/contact-card";
 import { Credibility } from "@/components/credibility";
 import { Hero } from "@/components/hero";
+import { ImpactMetrics } from "@/components/impact-metrics";
 import { Reveal } from "@/components/reveal";
+import { SectionDivider } from "@/components/section-divider";
 import { Section, SectionHeading } from "@/components/section-heading";
 import { SiteNav } from "@/components/site-nav";
-import { caseStudies, metrics, person, pillars, summary } from "@/lib/content";
+import { caseStudies, person, pillars, summary } from "@/lib/content";
 
 const PILLAR_ICONS = { gauge: Gauge, shield: Shield, users: Users } as const;
 
@@ -27,7 +29,7 @@ export default function Home() {
         <Hero />
 
         {/* 01 — Positioning */}
-        <Section id="about">
+        <Section id="about" tone="mint" gridPhase="a">
           <SectionHeading
             index="01"
             eyebrow="Positioning"
@@ -70,32 +72,15 @@ export default function Home() {
             {/* Verified impact metrics. Each carries its own provenance line so
                 no figure floats free of the work that produced it. */}
             <Reveal delay={0.12}>
-              <p className="font-mono text-xs uppercase tracking-[0.16em] text-subtle">
-                Verified impact
-              </p>
-              <dl className="mt-5 divide-y divide-ink-line/60 border-y border-ink-line/60">
-                {metrics.map((metric) => (
-                  <div key={metric.label} className="py-5">
-                    <dt className="font-mono text-[1.375rem] leading-none tracking-tight text-mint sm:text-2xl">
-                      {metric.value}
-                    </dt>
-                    <dd className="mt-2.5">
-                      <span className="block text-sm font-medium text-paper">
-                        {metric.label}
-                      </span>
-                      <span className="mt-1 block text-pretty text-sm leading-relaxed text-subtle">
-                        {metric.detail}
-                      </span>
-                    </dd>
-                  </div>
-                ))}
-              </dl>
+              <ImpactMetrics />
             </Reveal>
           </div>
         </Section>
 
+        <SectionDivider tone="mint" />
+
         {/* 02 — Selected systems */}
-        <Section id="work">
+        <Section id="work" tone="signal" gridPhase="b">
           <SectionHeading
             index="02"
             eyebrow="Selected systems"
@@ -109,8 +94,10 @@ export default function Home() {
           </ul>
         </Section>
 
+        <SectionDivider tone="signal" />
+
         {/* 03 — Capability map */}
-        <Section id="stack">
+        <Section id="stack" tone="mint" gridPhase="a">
           <SectionHeading
             index="03"
             eyebrow="Capability map"
@@ -120,8 +107,10 @@ export default function Home() {
           <CapabilityMap />
         </Section>
 
+        <SectionDivider tone="mint" />
+
         {/* 04 — Career */}
-        <Section id="journey">
+        <Section id="journey" tone="signal" gridPhase="b">
           <SectionHeading
             index="04"
             eyebrow="Career"
@@ -138,9 +127,10 @@ export default function Home() {
           </div>
         </Section>
 
+        <SectionDivider tone="signal" />
+
         {/* 05 — Contact */}
-        <Section id="contact" className="pb-24 sm:pb-32">
-          <div aria-hidden="true" className="mb-16 h-px w-full rule-fade" />
+        <Section id="contact" className="pb-24 sm:pb-32" tone="mint">
           <SectionHeading
             index="05"
             eyebrow="Contact"

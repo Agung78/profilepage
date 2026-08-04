@@ -1,17 +1,36 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Download, Menu, X } from "lucide-react";
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+} from "framer-motion";
 import { Monogram } from "@/components/monogram";
+import { HEADER_OFFSET } from "@/lib/motion";
 import { navItems, person } from "@/lib/content";
 import { cn } from "@/lib/utils";
 
 const SECTION_IDS = navItems.map((item) => item.href.slice(1));
 
 export function SiteNav() {
+  const reduceMotion = useReducedMotion();
   const [active, setActive] = useState<string>("");
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+
+  /* Slim scroll-progress indicator. This is a readout of scroll position rather
+     than decoration, so it stays under reduced motion — only the spring
+     smoothing is dropped. */
+  const { scrollYProgress } = useScroll();
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 120,
+    damping: 30,
+    restDelta: 0.001,
+  });
+  const progress = reduceMotion ? scrollYProgress : smoothProgress;
 
   /* Active-section highlight. IntersectionObserver rather than a scroll
      listener so this stays off the main thread during scroll. */
@@ -35,7 +54,13 @@ export function SiteNav() {
   }, []);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 12);
+      /* In the hero nothing downstream is active yet — otherwise "About"
+         lights up while the visitor is still looking at the title. */
+      if (y < 80) setActive("");
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -55,6 +80,30 @@ export function SiteNav() {
     };
   }, [open]);
 
+  /**
+   * Anchor scrolling with an explicit header offset.
+   *
+   * CSS `scroll-padding-top` already handles this, but doing the arithmetic here
+   * keeps the landing position identical across browsers and lets the motion
+   * preference decide between a smooth and an instant jump.
+   */
+  const scrollToSection = useCallback(
+    (event: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+      const target = document.getElementById(href.slice(1));
+      if (!target) return;
+      event.preventDefault();
+      const top =
+        target.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
+      window.scrollTo({
+        top: Math.max(0, top),
+        behavior: reduceMotion ? "auto" : "smooth",
+      });
+      window.history.replaceState(null, "", href);
+      setOpen(false);
+    },
+    [reduceMotion]
+  );
+
   return (
     <header
       className={cn(
@@ -70,6 +119,7 @@ export function SiteNav() {
       >
         <a
           href="#top"
+          onClick={(event) => scrollToSection(event, "#top")}
           className="flex items-center gap-2.5 rounded-md"
           aria-label={`${person.name} — back to top`}
         >
@@ -86,19 +136,21 @@ export function SiteNav() {
               <a
                 key={item.href}
                 href={item.href}
+                onClick={(event) => scrollToSection(event, item.href)}
                 aria-current={isActive ? "true" : undefined}
                 className={cn(
-                  "relative rounded-md px-3 py-2 text-sm transition-colors",
-                  isActive
-                    ? "text-paper"
-                    : "text-subtle hover:text-paper"
+                  "relative rounded-md px-3 py-2 text-sm transition-colors duration-300",
+                  isActive ? "text-paper" : "text-subtle hover:text-paper"
                 )}
               >
                 {item.label}
+                {/* Scales from the centre rather than fading, so the indicator
+                    reads as travelling between items. */}
                 <span
+                  aria-hidden="true"
                   className={cn(
-                    "absolute inset-x-3 -bottom-px h-px transition-opacity duration-300",
-                    isActive ? "bg-mint opacity-100" : "opacity-0"
+                    "absolute inset-x-3 -bottom-px h-px bg-mint transition-transform duration-300 ease-out",
+                    isActive ? "scale-x-100" : "scale-x-0"
                   )}
                 />
               </a>
@@ -107,7 +159,7 @@ export function SiteNav() {
           <a
             href={person.resume}
             download
-            className="ml-3 inline-flex items-center gap-2 rounded-md bg-mint px-3.5 py-2 text-sm font-semibold text-ink transition-colors hover:bg-mint-soft"
+            className="ml-3 inline-flex items-center gap-2 rounded-md bg-mint px-3.5 py-2 text-sm font-semibold text-ink transition-[background-color,transform] duration-300 hover:-translate-y-0.5 hover:bg-mint-soft"
           >
             <Download className="h-4 w-4" aria-hidden="true" />
             Résumé
@@ -120,7 +172,7 @@ export function SiteNav() {
           aria-expanded={open}
           aria-controls="mobile-nav"
           aria-label={open ? "Close menu" : "Open menu"}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-ink-line text-paper md:hidden"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-ink-line text-paper transition-colors duration-300 hover:border-mint/40 md:hidden"
         >
           {open ? (
             <X className="h-5 w-5" aria-hidden="true" />
@@ -142,12 +194,10 @@ export function SiteNav() {
             <li key={item.href}>
               <a
                 href={item.href}
-                onClick={() => setOpen(false)}
+                onClick={(event) => scrollToSection(event, item.href)}
                 className={cn(
-                  "block rounded-md px-2 py-3 text-base",
-                  active === item.href.slice(1)
-                    ? "text-mint"
-                    : "text-muted"
+                  "block rounded-md px-2 py-3 text-base transition-colors duration-200",
+                  active === item.href.slice(1) ? "text-mint" : "text-muted"
                 )}
               >
                 {item.label}
@@ -167,6 +217,13 @@ export function SiteNav() {
           </li>
         </ul>
       </div>
+
+      {/* Progress rail, pinned to the header's bottom edge. */}
+      <motion.div
+        aria-hidden="true"
+        style={{ scaleX: progress }}
+        className="h-[2px] origin-left bg-gradient-to-r from-mint via-mint-soft to-signal"
+      />
     </header>
   );
 }
