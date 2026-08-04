@@ -158,7 +158,8 @@ export function SiteNav() {
           })}
           <a
             href={person.resume}
-            download
+            target="_blank"
+            rel="noopener noreferrer"
             className="ml-3 inline-flex items-center gap-2 rounded-md bg-mint px-3.5 py-2 text-sm font-semibold text-ink transition-[background-color,transform] duration-300 hover:-translate-y-0.5 hover:bg-mint-soft"
           >
             <Download className="h-4 w-4" aria-hidden="true" />
@@ -207,7 +208,8 @@ export function SiteNav() {
           <li className="pb-2 pt-3">
             <a
               href={person.resume}
-              download
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={() => setOpen(false)}
               className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-mint px-4 py-3 text-sm font-semibold text-ink"
             >

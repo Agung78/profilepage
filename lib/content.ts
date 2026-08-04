@@ -20,7 +20,7 @@ export const person = {
   email: "agungmethodist78@gmail.com",
   linkedin: "https://www.linkedin.com/in/agung78/",
   github: "https://github.com/Agung78/",
-  resume: "/Mas-Agung-Denisa-Bekam-CV.pdf",
+  resume: "https://drive.google.com/file/d/1_RWa2N-laQPTV45hVfhIcBNuyfB0fBHG/view?usp=sharing",
   availability: "Open to senior full-stack & platform roles",
 } as const;
 

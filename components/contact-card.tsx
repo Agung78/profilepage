@@ -86,7 +86,8 @@ export function ContactCard() {
         <li>
           <a
             href={person.resume}
-            download
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-2 rounded-md bg-mint px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-mint-soft"
           >
             <Download className="h-4 w-4" aria-hidden="true" />
