@@ -50,17 +50,14 @@ export function Hero() {
           </span>
         </motion.div>
 
-        <motion.h1
-          {...step(HERO_STEPS.name)}
-          className="mt-8 max-w-4xl text-balance text-[clamp(2.5rem,8vw,5.25rem)] font-semibold leading-[0.95] tracking-[-0.03em] text-paper"
-        >
+        {/* No entrance animation here: this is the LCP candidate. An
+            opacity-0 initial state would bake into the static HTML and
+            block paint until Framer hydrates and the delay elapses. */}
+        <h1 className="mt-8 max-w-4xl text-balance text-[clamp(2.5rem,8vw,5.25rem)] font-semibold leading-[0.95] tracking-[-0.03em] text-paper">
           {person.name}
-        </motion.h1>
+        </h1>
 
-        <motion.p
-          {...step(HERO_STEPS.role)}
-          className="mt-6 max-w-2xl text-pretty text-lg leading-relaxed text-muted sm:text-xl"
-        >
+        <p className="mt-6 max-w-2xl text-pretty text-lg leading-relaxed text-muted sm:text-xl">
           Full-stack engineer working across product UX, cloud infrastructure,
           fintech and data platforms — currently{" "}
           <strong className="font-medium text-paper">
@@ -71,7 +68,7 @@ export function Hero() {
             {person.concurrentRole} at {person.concurrentCompany}
           </strong>
           .
-        </motion.p>
+        </p>
 
         <motion.dl
           {...step(HERO_STEPS.meta)}

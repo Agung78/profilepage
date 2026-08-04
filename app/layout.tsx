@@ -19,6 +19,9 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-jetbrains-mono",
   display: "swap",
+  /* Never used above the fold in size that matters for LCP — don't let its
+     preload compete for bandwidth with the CSS on the critical path. */
+  preload: false,
 });
 
 const DESCRIPTION =
