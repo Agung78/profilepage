@@ -1,12 +1,8 @@
 "use client";
 
 import { useRef } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import { EASE, registerScrollTriggers } from "@/lib/motion";
+import { EASE, gsap, useGSAP } from "@/lib/motion";
 import { useMotionPrefs } from "@/hooks/use-motion-prefs";
-
-registerScrollTriggers();
 
 /**
  * Section seam: a hairline that draws itself outward from the centre as it

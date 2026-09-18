@@ -2,15 +2,11 @@
 
 import { useRef, useState } from "react";
 import { Icon } from "@iconify/react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
 import { Reveal } from "@/components/reveal";
 import { useFinePointer, useMotionPrefs } from "@/hooks/use-motion-prefs";
-import { EASE, registerScrollTriggers } from "@/lib/motion";
+import { EASE, gsap, useGSAP } from "@/lib/motion";
 import { domainLinks, domainNodes, stackGroups } from "@/lib/content";
 import { cn } from "@/lib/utils";
-
-registerScrollTriggers();
 
 const ICONS = {
   code: "solar:code-square-linear",

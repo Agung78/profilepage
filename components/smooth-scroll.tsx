@@ -1,13 +1,9 @@
 "use client";
 
 import { useEffect } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import { useMotionPrefs } from "@/hooks/use-motion-prefs";
-import { registerScrollTriggers } from "@/lib/motion";
-
-registerScrollTriggers();
+import { gsap, ScrollTrigger } from "@/lib/motion";
 
 declare global {
   interface Window {

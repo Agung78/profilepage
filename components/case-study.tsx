@@ -2,17 +2,12 @@
 
 import { useRef, useState } from "react";
 import { Icon } from "@iconify/react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
 import { Reveal } from "@/components/reveal";
 import { SystemDiagram } from "@/components/system-diagram";
-import { EASE, registerScrollTriggers } from "@/lib/motion";
+import { EASE, gsap, ScrollTrigger, useGSAP } from "@/lib/motion";
 import { useMotionPrefs } from "@/hooks/use-motion-prefs";
 import { systemFlows, type CaseStudy as CaseStudyData } from "@/lib/content";
 import { cn } from "@/lib/utils";
-
-registerScrollTriggers();
 
 /** Disclosed detail. The challenge stays visible so every card reads on its own. */
 const DISCLOSED = [

@@ -2,14 +2,10 @@
 
 import { useRef, useState } from "react";
 import { Icon } from "@iconify/react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import { EASE, registerScrollTriggers } from "@/lib/motion";
+import { EASE, gsap, useGSAP } from "@/lib/motion";
 import { useMotionPrefs } from "@/hooks/use-motion-prefs";
 import { roles, type Role } from "@/lib/content";
 import { cn } from "@/lib/utils";
-
-registerScrollTriggers();
 
 const keyOf = (role: Role) => `${role.company}-${role.title}`;
 

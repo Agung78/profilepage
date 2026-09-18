@@ -1,13 +1,9 @@
 "use client";
 
 import { useRef } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import { registerScrollTriggers, EASE } from "@/lib/motion";
+import { gsap, useGSAP, EASE } from "@/lib/motion";
 import { useMotionPrefs } from "@/hooks/use-motion-prefs";
 import { systemFlows, type CaseStudy } from "@/lib/content";
-
-registerScrollTriggers();
 
 const TONES = {
   emerald: { line: "#3DDC97", soft: "#7BEFC0" },

@@ -1,8 +1,6 @@
 "use client";
 
 import { useRef } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
 import { Icon } from "@iconify/react";
 import { CursorSpotlight } from "@/components/cursor-spotlight";
 import { Monogram } from "@/components/monogram";
@@ -13,11 +11,10 @@ import {
   EASE,
   HERO_STEPS,
   HERO_STEP_DURATION,
-  registerScrollTriggers,
+  gsap,
+  useGSAP,
 } from "@/lib/motion";
 import { nowStrip, person } from "@/lib/content";
-
-registerScrollTriggers();
 
 /**
  * Hero, rebuilt typographic per REDESIGN.md §9 Q1's own stated fallback: no
