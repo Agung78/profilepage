@@ -1,28 +1,24 @@
 "use client";
 
-import { useState } from "react";
-import {
-  BarChart3,
-  Code2,
-  Database,
-  Shield,
-  Sparkles,
-  Terminal,
-} from "lucide-react";
-import { motion, useReducedMotion } from "framer-motion";
+import { useRef, useState } from "react";
+import { Icon } from "@iconify/react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import { Reveal } from "@/components/reveal";
-import { useFinePointer } from "@/hooks/use-motion-prefs";
-import { EASE, ONCE_IN_VIEW } from "@/lib/motion";
+import { useFinePointer, useMotionPrefs } from "@/hooks/use-motion-prefs";
+import { EASE, registerScrollTriggers } from "@/lib/motion";
 import { domainLinks, domainNodes, stackGroups } from "@/lib/content";
 import { cn } from "@/lib/utils";
 
+registerScrollTriggers();
+
 const ICONS = {
-  code: Code2,
-  terminal: Terminal,
-  database: Database,
-  shield: Shield,
-  sparkles: Sparkles,
-  chart: BarChart3,
+  code: "solar:code-square-linear",
+  terminal: "solar:file-terminal-linear",
+  database: "solar:database-linear",
+  shield: "solar:shield-linear",
+  sparkles: "solar:stars-linear",
+  chart: "solar:chart-2-linear",
 } as const;
 
 /** Symmetric adjacency collapsed to one entry per pair. */
@@ -31,13 +27,49 @@ const EDGES = Object.entries(domainLinks).flatMap(([from, targets]) =>
 );
 
 export function CapabilityMap() {
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = useMotionPrefs();
   const finePointer = useFinePointer();
   const [active, setActive] = useState<string | null>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
 
   const related = active ? domainLinks[active] ?? [] : [];
   const isRelated = (title: string) =>
     active === title || related.includes(title);
+
+  /* Entrance choreography, not a scrub or a pin — an IntersectionObserver
+     plays a paused GSAP timeline once, rather than reaching for
+     ScrollTrigger (reserved elsewhere for the three scrub/pin uses). */
+  useGSAP(
+    () => {
+      if (reduceMotion || !svgRef.current) return;
+      const nodes = svgRef.current.querySelectorAll("[data-node]");
+
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo(svgRef.current, { opacity: 0 }, { opacity: 1, duration: 0.6, ease: EASE });
+      tl.fromTo(
+        nodes,
+        { opacity: 0, scale: 0.85, transformOrigin: "center" },
+        { opacity: 1, scale: 1, duration: 0.35, ease: EASE, stagger: 0.05 },
+        "<"
+      );
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (!entries[0]?.isIntersecting) return;
+          tl.play();
+          observer.disconnect();
+        },
+        { threshold: 0, rootMargin: "0px 0px -12% 0px" }
+      );
+      observer.observe(svgRef.current);
+
+      return () => {
+        observer.disconnect();
+        tl.kill();
+      };
+    },
+    { dependencies: [reduceMotion] }
+  );
 
   return (
     <>
@@ -74,30 +106,14 @@ export function CapabilityMap() {
           aria-hidden="true"
           className="absolute inset-0 bg-dot-grid opacity-30 mask-fade-edges"
         />
-        <motion.svg
+        <svg
+          ref={svgRef}
           viewBox="0 0 520 258"
           aria-hidden="true"
+          style={reduceMotion ? undefined : { opacity: 0 }}
           className="relative mx-auto h-auto w-full max-w-xl"
-          initial={reduceMotion ? undefined : "hidden"}
-          whileInView={reduceMotion ? undefined : "show"}
-          viewport={ONCE_IN_VIEW}
-          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.05 } } }}
         >
-          {/* Enter animation lives on this wrapper; the per-edge attributes below
-              carry interaction state, so the two never fight over `opacity`. */}
-          <motion.g
-            variants={
-              reduceMotion
-                ? undefined
-                : {
-                    hidden: { opacity: 0 },
-                    show: {
-                      opacity: 1,
-                      transition: { duration: 0.6, ease: EASE },
-                    },
-                  }
-            }
-          >
+          <g>
             {EDGES.map(([from, to]) => {
               const a = domainNodes[from];
               const b = domainNodes[to];
@@ -105,6 +121,7 @@ export function CapabilityMap() {
               return (
                 <line
                   key={`${from}-${to}`}
+                  data-edge=""
                   x1={a.x}
                   y1={a.y}
                   x2={b.x}
@@ -116,7 +133,7 @@ export function CapabilityMap() {
                 />
               );
             })}
-          </motion.g>
+          </g>
 
           {Object.entries(domainNodes).map(([title, node]) => {
             const state =
@@ -129,24 +146,7 @@ export function CapabilityMap() {
                     : "dim";
 
             return (
-              <motion.g
-                key={title}
-                variants={
-                  reduceMotion
-                    ? undefined
-                    : {
-                        hidden: { opacity: 0, scale: 0.85 },
-                        show: {
-                          opacity: 1,
-                          scale: 1,
-                          transition: { duration: 0.35, ease: EASE },
-                        },
-                      }
-                }
-                style={{ transformOrigin: `${node.x}px ${node.y}px` }}
-              >
-                {/* Interaction state on an inner group, clear of the enter
-                    animation's opacity/scale. */}
+              <g key={title} data-node="" style={{ transformOrigin: `${node.x}px ${node.y}px` }}>
                 <g
                   className="transition-opacity duration-300"
                   opacity={state === "dim" ? 0.3 : 1}
@@ -191,15 +191,15 @@ export function CapabilityMap() {
                     {title}
                   </text>
                 </g>
-              </motion.g>
+              </g>
             );
           })}
-        </motion.svg>
+        </svg>
       </Reveal>
 
       <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {stackGroups.map((group, index) => {
-          const Icon = ICONS[group.icon as keyof typeof ICONS];
+          const icon = ICONS[group.icon as keyof typeof ICONS];
           const accent =
             group.tone === "emerald" ? "text-mint" : "text-signal";
           /* Dimming is a pointer affordance only. On touch there is no hover, so
@@ -231,7 +231,7 @@ export function CapabilityMap() {
                 className="outline-none"
               >
                 <div className="flex items-center gap-2.5">
-                  <Icon className={`h-4 w-4 ${accent}`} aria-hidden="true" />
+                  <Icon icon={icon} className={`h-4 w-4 ${accent}`} aria-hidden="true" />
                   <h3 className="font-mono text-xs uppercase tracking-[0.14em] text-paper">
                     {group.title}
                   </h3>

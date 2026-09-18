@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { animate, useInView, useReducedMotion } from "framer-motion";
+import gsap from "gsap";
 import { FlowPipeline } from "@/components/flow-pipeline";
+import { useMotionPrefs } from "@/hooks/use-motion-prefs";
 import { metrics } from "@/lib/content";
 
 /** Splits "4 yrs" into 4 and " yrs". Returns null for non-numeric values. */
@@ -16,41 +17,55 @@ function parseValue(value: string) {
  * Counts up to its value the first time it becomes visible.
  *
  * The final string is what renders server-side, so a no-JS visitor and every
- * crawler see the real figure. The count is written straight to the DOM node
- * rather than through state — no re-renders, and the value is restored exactly
- * as authored on completion.
+ * crawler see the real figure. Visibility uses a plain IntersectionObserver
+ * (not a ScrollTrigger — this is a one-shot entrance count, not a scrub or a
+ * pin, so it stays outside the three uses REDESIGN.md §4 reserves for
+ * ScrollTrigger) and the count itself is a GSAP tween over a plain object,
+ * written to the DOM node on every tick rather than through React state.
  */
 function MetricValue({ value }: { value: string }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const reduceMotion = useReducedMotion();
-  /* Positive bottom margin: the observer fires while the metric is still below
-     the fold, so the count is already underway by the time it is visible. That
-     removes any need to pre-zero the number on mount — the real value is only
-     ever replaced as the first frame of an animation that is actually running,
-     so a stalled observer leaves the correct figure on screen. */
-  const inView = useInView(ref, { once: true, margin: "0px 0px 20% 0px" });
+  const reduceMotion = useMotionPrefs();
   const parsed = parseValue(value);
   const shouldCount = Boolean(parsed) && !reduceMotion;
 
   useEffect(() => {
-    if (!shouldCount || !parsed || !inView) return;
     const node = ref.current;
     if (!node) return;
 
-    node.textContent = `0${parsed.suffix}`;
-    const controls = animate(0, parsed.target, {
-      duration: 1.1,
-      ease: "easeOut",
-      onUpdate: (latest) => {
-        node.textContent = `${Math.round(latest)}${parsed.suffix}`;
-      },
-      onComplete: () => {
-        node.textContent = value;
-      },
-    });
+    if (!shouldCount || !parsed) {
+      node.textContent = value;
+      return;
+    }
 
-    return () => controls.stop();
-  }, [inView, shouldCount, parsed, value]);
+    let tween: gsap.core.Tween | undefined;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries[0]?.isIntersecting) return;
+        observer.disconnect();
+        node.textContent = `0${parsed.suffix}`;
+        const proxy = { value: 0 };
+        tween = gsap.to(proxy, {
+          value: parsed.target,
+          duration: 1.1,
+          ease: "power2.out",
+          onUpdate: () => {
+            node.textContent = `${Math.round(proxy.value)}${parsed.suffix}`;
+          },
+          onComplete: () => {
+            node.textContent = value;
+          },
+        });
+      },
+      { threshold: 0, rootMargin: "0px 0px 20% 0px" }
+    );
+    observer.observe(node);
+
+    return () => {
+      observer.disconnect();
+      tween?.kill();
+    };
+  }, [shouldCount, parsed, value]);
 
   return <span ref={ref}>{value}</span>;
 }

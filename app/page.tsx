@@ -1,5 +1,4 @@
-import { Gauge, Shield, Users } from "lucide-react";
-import { AmbientBackdrop } from "@/components/ambient-backdrop";
+import { Icon } from "@iconify/react";
 import { CapabilityMap } from "@/components/capability-map";
 import { CareerTimeline } from "@/components/career-timeline";
 import { CaseStudy } from "@/components/case-study";
@@ -13,7 +12,11 @@ import { Section, SectionHeading } from "@/components/section-heading";
 import { SiteNav } from "@/components/site-nav";
 import { caseStudies, person, pillars, summary } from "@/lib/content";
 
-const PILLAR_ICONS = { gauge: Gauge, shield: Shield, users: Users } as const;
+const PILLAR_ICONS = {
+  gauge: "solar:speedometer-low-linear",
+  shield: "solar:shield-linear",
+  users: "solar:users-group-rounded-linear",
+} as const;
 
 /**
  * Server component. Only the nav, hero, timeline, contact card and reveal
@@ -22,7 +25,6 @@ const PILLAR_ICONS = { gauge: Gauge, shield: Shield, users: Users } as const;
 export default function Home() {
   return (
     <>
-      <AmbientBackdrop />
       <SiteNav />
 
       <main id="main">
@@ -45,13 +47,14 @@ export default function Home() {
               <div aria-hidden="true" className="h-px w-24 rule-fade" />
               <ul className="space-y-6">
                 {pillars.map((pillar) => {
-                  const Icon =
+                  const icon =
                     PILLAR_ICONS[pillar.icon as keyof typeof PILLAR_ICONS];
                   const accent =
                     pillar.tone === "emerald" ? "text-mint" : "text-signal";
                   return (
                     <li key={pillar.title} className="flex gap-4">
                       <Icon
+                        icon={icon}
                         className={`mt-0.5 h-5 w-5 shrink-0 ${accent}`}
                         aria-hidden="true"
                       />

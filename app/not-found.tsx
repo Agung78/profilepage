@@ -1,13 +1,11 @@
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
-import { AmbientBackdrop } from "@/components/ambient-backdrop";
+import { Icon } from "@iconify/react";
 
 export const metadata = { title: "Page not found" };
 
 export default function NotFound() {
   return (
     <>
-      <AmbientBackdrop />
       <main
         id="main"
         className="mx-auto flex min-h-[100svh] max-w-2xl flex-col justify-center px-5 sm:px-8"
@@ -26,7 +24,7 @@ export default function NotFound() {
           href="/"
           className="mt-8 inline-flex w-fit items-center gap-2 rounded-md bg-mint px-5 py-3 text-sm font-semibold text-ink transition-colors hover:bg-mint-soft"
         >
-          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          <Icon icon="solar:arrow-left-linear" className="h-4 w-4" aria-hidden="true" />
           Back to the portfolio
         </Link>
       </main>

@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import { SmoothScroll } from "@/components/smooth-scroll";
 import {
   SITE_URL,
   certifications,
@@ -123,10 +124,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`scroll-smooth ${inter.variable} ${jetbrainsMono.variable}`}
+      className={`${inter.variable} ${jetbrainsMono.variable}`}
     >
+      {/* No `scroll-smooth` class: Lenis owns smooth scrolling when it is
+          instantiated, and fighting it with the native CSS behaviour causes
+          stutter. Under `prefers-reduced-motion` Lenis never mounts, so
+          anchor jumps fall back to plain, instant native scroll. */}
       <head>
-        {/* Reveal wrappers start at opacity 0 once Framer hydrates. If scripts
+        {/* Reveal wrappers start at opacity 0 once GSAP takes over. If scripts
             never run, this rule guarantees the page is still fully readable. */}
         <noscript>
           <style>{`[data-reveal]{opacity:1!important;transform:none!important}`}</style>
@@ -143,7 +148,7 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        {children}
+        <SmoothScroll>{children}</SmoothScroll>
       </body>
     </html>
   );

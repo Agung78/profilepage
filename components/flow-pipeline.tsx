@@ -1,10 +1,16 @@
 "use client";
 
 import { useRef } from "react";
-import { useInView, useReducedMotion } from "framer-motion";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { registerScrollTriggers } from "@/lib/motion";
+import { useMotionPrefs } from "@/hooks/use-motion-prefs";
+
+registerScrollTriggers();
 
 const START = 78;
 const END = 246;
+const TRAVEL = END - START - 12;
 /** Deterministic particle offsets — no randomness, no hydration drift. */
 const PARTICLES = [0, -1.6, -3.2, -4.8, -6.4];
 
@@ -13,21 +19,54 @@ const PARTICLES = [0, -1.6, -3.2, -4.8, -6.4];
  *
  * The rails, the stage labels and both endpoints are plain SVG geometry and
  * text, so the whole story reads with every animation switched off. The
- * particles are the only moving part, and they stop when the section is
- * offscreen or the visitor prefers reduced motion.
+ * particles are the only moving part, and their progress is scrubbed to
+ * scroll position — one of the three uses REDESIGN.md §4 reserves for
+ * ScrollTrigger — rather than looping on a free-running timer, so the
+ * "processing window shrinking" story is literally tied to how far the
+ * visitor has scrolled through it.
  */
 export function FlowPipeline() {
   const ref = useRef<HTMLDivElement>(null);
-  const reduceMotion = useReducedMotion();
-  const inView = useInView(ref, { margin: "0px 0px -10% 0px" });
-  const animate = !reduceMotion;
+  const reduceMotion = useMotionPrefs();
+
+  useGSAP(
+    () => {
+      if (reduceMotion || !ref.current) return;
+      const particles = ref.current.querySelectorAll("[data-particle]");
+      if (!particles.length) return;
+
+      const tl = gsap.timeline({
+        repeat: 2,
+        scrollTrigger: {
+          trigger: ref.current,
+          start: "top 90%",
+          end: "bottom 30%",
+          scrub: 0.5,
+        },
+      });
+
+      tl.fromTo(
+        particles,
+        { x: 0, opacity: 0 },
+        {
+          x: TRAVEL,
+          opacity: 1,
+          duration: 1,
+          ease: "none",
+          stagger: { each: 0.15, from: "start" },
+        }
+      ).to(particles, { opacity: 0, duration: 0.15 }, "-=0.15");
+
+      return () => {
+        tl.scrollTrigger?.kill();
+        tl.kill();
+      };
+    },
+    { dependencies: [reduceMotion] }
+  );
 
   return (
-    <div
-      ref={ref}
-      data-motion={animate && inView ? "running" : "paused"}
-      className="mt-4"
-    >
+    <div ref={ref} className="mt-4">
       <svg
         viewBox="0 0 324 74"
         role="img"
@@ -61,26 +100,26 @@ export function FlowPipeline() {
           <path d={`M${START} 40 H${END}`} />
         </g>
 
-        {/* Travelling particles */}
-        {animate ? (
-          <g fill="#3DDC97">
-            {PARTICLES.map((delay, index) => (
-              <circle
-                key={index}
-                cx={START}
-                cy="31"
-                r="2.4"
-                className="flow-particle"
-                style={{ animationDelay: `${delay}s` }}
-              />
-            ))}
-          </g>
-        ) : (
-          /* Static stand-in so the pipe never reads as empty. */
+        {/* Particles: scrubbed by scroll when motion is allowed, otherwise a
+            static stand-in so the pipe never reads as empty. */}
+        {reduceMotion ? (
           <g fill="#3DDC97" opacity="0.7">
             <circle cx={START + 40} cy="31" r="2.4" />
             <circle cx={START + 84} cy="31" r="2.4" />
             <circle cx={START + 128} cy="31" r="2.4" />
+          </g>
+        ) : (
+          <g fill="#3DDC97">
+            {PARTICLES.map((_, index) => (
+              <circle
+                key={index}
+                data-particle=""
+                cx={START}
+                cy="31"
+                r="2.4"
+                opacity="0"
+              />
+            ))}
           </g>
         )}
 

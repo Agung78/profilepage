@@ -1,16 +1,15 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { ChevronDown } from "lucide-react";
-import {
-  motion,
-  useReducedMotion,
-  useScroll,
-  useSpring,
-} from "framer-motion";
-import { EASE, ONCE_IN_VIEW } from "@/lib/motion";
+import { Icon } from "@iconify/react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { EASE, registerScrollTriggers } from "@/lib/motion";
+import { useMotionPrefs } from "@/hooks/use-motion-prefs";
 import { roles, type Role } from "@/lib/content";
 import { cn } from "@/lib/utils";
+
+registerScrollTriggers();
 
 const keyOf = (role: Role) => `${role.company}-${role.title}`;
 
@@ -25,30 +24,87 @@ type EntryProps = {
 };
 
 function RoleEntry({ role, open, onToggle }: EntryProps) {
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = useMotionPrefs();
+  const ref = useRef<HTMLLIElement>(null);
   const hasDetail = role.points.length > 0;
   const panelId = `role-panel-${keyOf(role).replace(/\s+/g, "-")}`;
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  /* Entrance choreography, not a scrub or a pin, so this is an
+     IntersectionObserver + a plain GSAP tween rather than a ScrollTrigger —
+     the spine below is this component's one ScrollTrigger use. */
+  useGSAP(
+    () => {
+      if (reduceMotion || !ref.current) return;
+      const node = ref.current.querySelector("[data-timeline-node]");
+      const card = ref.current.querySelector("[data-timeline-card]");
+      if (!node || !card) return;
+
+      const nodeTween = gsap.fromTo(
+        node,
+        { scale: 0, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.34, ease: EASE, paused: true }
+      );
+      const cardTween = gsap.fromTo(
+        card,
+        { opacity: 0, y: 14 },
+        { opacity: 1, y: 0, duration: 0.44, ease: EASE, delay: 0.06, paused: true }
+      );
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (!entries[0]?.isIntersecting) return;
+          nodeTween.play();
+          cardTween.play();
+          observer.disconnect();
+        },
+        { threshold: 0, rootMargin: "0px 0px -12% 0px" }
+      );
+      observer.observe(ref.current);
+
+      return () => {
+        observer.disconnect();
+        nodeTween.kill();
+        cardTween.kill();
+      };
+    },
+    { scope: ref, dependencies: [reduceMotion] }
+  );
+
+  useGSAP(
+    () => {
+      const panel = panelRef.current;
+      if (!panel) return;
+      if (reduceMotion) {
+        gsap.set(panel, { height: open ? "auto" : 0, opacity: open ? 1 : 0 });
+        return;
+      }
+      gsap.to(panel, {
+        height: open ? "auto" : 0,
+        opacity: open ? 1 : 0,
+        duration: 0.32,
+        ease: EASE,
+      });
+    },
+    { dependencies: [open, reduceMotion] }
+  );
 
   return (
-    <li className="relative pl-8">
+    <li ref={ref} className="relative pl-8">
       {/* Node. Scales in once as the entry arrives. */}
-      <motion.span
+      <span
+        data-timeline-node
         aria-hidden="true"
-        initial={reduceMotion ? undefined : { scale: 0, opacity: 0 }}
-        whileInView={reduceMotion ? undefined : { scale: 1, opacity: 1 }}
-        viewport={ONCE_IN_VIEW}
-        transition={{ duration: 0.34, ease: EASE }}
+        style={reduceMotion ? undefined : { opacity: 0, transform: "scale(0)" }}
         className={cn(
           "absolute left-0 top-3 h-[15px] w-[15px] rounded-full border-[3px] border-ink",
           role.current ? "bg-mint" : "bg-ink-line"
         )}
       />
 
-      <motion.div
-        initial={reduceMotion ? undefined : { opacity: 0, y: 14 }}
-        whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-        viewport={ONCE_IN_VIEW}
-        transition={{ duration: 0.44, ease: EASE, delay: 0.06 }}
+      <div
+        data-timeline-card
+        style={reduceMotion ? undefined : { opacity: 0 }}
         className="rounded-xl border border-ink-line/70 bg-ink-raised/40 transition-[border-color,transform] duration-300 hover:-translate-y-0.5 hover:border-ink-line focus-within:border-mint/30"
       >
         {/* The toggle lives on the meta row, not beside the title, so the
@@ -76,7 +132,8 @@ function RoleEntry({ role, open, onToggle }: EntryProps) {
                 {role.company}
               </span>
               <span aria-hidden="true">{open ? "Less" : "Detail"}</span>
-              <ChevronDown
+              <Icon
+                icon="solar:alt-arrow-down-linear"
                 aria-hidden="true"
                 className={cn(
                   "h-3.5 w-3.5 transition-transform duration-300",
@@ -101,14 +158,10 @@ function RoleEntry({ role, open, onToggle }: EntryProps) {
         </div>
 
         {hasDetail ? (
-          <motion.div
+          <div
+            ref={panelRef}
             id={panelId}
-            initial={false}
-            animate={{ height: open ? "auto" : 0, opacity: open ? 1 : 0 }}
-            transition={
-              reduceMotion ? { duration: 0 } : { duration: 0.32, ease: EASE }
-            }
-            className="overflow-hidden"
+            style={{ height: 0, opacity: 0, overflow: "hidden" }}
           >
             <ul className="space-y-2.5 border-t border-ink-line/60 px-5 py-4">
               {role.points.map((point) => (
@@ -124,9 +177,9 @@ function RoleEntry({ role, open, onToggle }: EntryProps) {
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
         ) : null}
-      </motion.div>
+      </div>
     </li>
   );
 }
@@ -138,24 +191,41 @@ function RoleEntry({ role, open, onToggle }: EntryProps) {
  * than stacked in sequence, so nothing implies HeyRCG! replaced AI WorkLabs —
  * both run today. Past roles follow in CV order below.
  *
- * The spine draws itself as the section scrolls (a `scaleY` transform on a
- * single element, spring-smoothed). Under `prefers-reduced-motion` it renders
- * fully drawn instead.
+ * The spine draws itself as the section scrolls — a scrubbed ScrollTrigger
+ * driving `scaleY` on a single element, one of the three scrub/pin uses this
+ * page allows itself (REDESIGN.md §4). Under `prefers-reduced-motion` it
+ * renders fully drawn instead and no ScrollTrigger is created at all.
  */
 export function CareerTimeline() {
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = useMotionPrefs();
   const wrapper = useRef<HTMLDivElement>(null);
+  const spine = useRef<HTMLSpanElement>(null);
   const [openKey, setOpenKey] = useState<string | null>(keyOf(roles[0]));
 
-  const { scrollYProgress } = useScroll({
-    target: wrapper,
-    offset: ["start 0.85", "end 0.45"],
-  });
-  const progress = useSpring(scrollYProgress, {
-    stiffness: 70,
-    damping: 24,
-    restDelta: 0.001,
-  });
+  useGSAP(
+    () => {
+      if (reduceMotion || !wrapper.current || !spine.current) return;
+      const trigger = gsap.fromTo(
+        spine.current,
+        { scaleY: 0 },
+        {
+          scaleY: 1,
+          ease: "none",
+          scrollTrigger: {
+            trigger: wrapper.current,
+            start: "top 85%",
+            end: "bottom 45%",
+            scrub: 0.6,
+          },
+        }
+      );
+      return () => {
+        trigger.scrollTrigger?.kill();
+        trigger.kill();
+      };
+    },
+    { dependencies: [reduceMotion] }
+  );
 
   const toggle = (role: Role) => {
     const key = keyOf(role);
@@ -171,9 +241,10 @@ export function CareerTimeline() {
         aria-hidden="true"
         className="absolute bottom-6 left-[7px] top-3 w-px bg-ink-line/70"
       />
-      <motion.span
+      <span
+        ref={spine}
         aria-hidden="true"
-        style={reduceMotion ? undefined : { scaleY: progress }}
+        style={{ transform: reduceMotion ? "scaleY(1)" : "scaleY(0)" }}
         className="absolute bottom-6 left-[7px] top-3 w-px origin-top bg-gradient-to-b from-mint/70 via-signal/50 to-signal/20"
       />
 

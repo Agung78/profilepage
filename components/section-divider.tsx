@@ -1,7 +1,12 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
-import { EASE } from "@/lib/motion";
+import { useRef } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { EASE, registerScrollTriggers } from "@/lib/motion";
+import { useMotionPrefs } from "@/hooks/use-motion-prefs";
+
+registerScrollTriggers();
 
 /**
  * Section seam: a hairline that draws itself outward from the centre as it
@@ -9,24 +14,53 @@ import { EASE } from "@/lib/motion";
  *
  * This is the same gesture the hero's scroll cue resolves into, so the page
  * transitions read as one continuous system rather than a set of hard edges.
+ * A one-shot entrance, not a scrub or a pin, so it's an IntersectionObserver
+ * driving a paused GSAP tween rather than a ScrollTrigger.
  */
 export function SectionDivider({
   tone = "mint",
 }: {
   tone?: "mint" | "signal";
 }) {
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = useMotionPrefs();
+  const ref = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      if (reduceMotion || !ref.current) return;
+      const el = ref.current;
+      const tween = gsap.fromTo(
+        el,
+        { scaleX: 0, opacity: 0 },
+        { scaleX: 1, opacity: 1, duration: 0.9, ease: EASE, paused: true }
+      );
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (!entries[0]?.isIntersecting) return;
+          tween.play();
+          observer.disconnect();
+        },
+        { threshold: 0, rootMargin: "0px 0px -10% 0px" }
+      );
+      observer.observe(el);
+
+      return () => {
+        observer.disconnect();
+        tween.kill();
+      };
+    },
+    { dependencies: [reduceMotion] }
+  );
 
   return (
     <div
       aria-hidden="true"
       className="relative mx-auto max-w-6xl px-5 sm:px-8"
     >
-      <motion.div
-        initial={reduceMotion ? undefined : { scaleX: 0, opacity: 0 }}
-        whileInView={reduceMotion ? undefined : { scaleX: 1, opacity: 1 }}
-        viewport={{ once: true, margin: "0px 0px -15% 0px" }}
-        transition={{ duration: 0.9, ease: EASE }}
+      <div
+        ref={ref}
+        style={reduceMotion ? undefined : { transform: "scaleX(0)", opacity: 0 }}
         className="rule-fade relative h-px origin-center"
       >
         <span
@@ -34,7 +68,7 @@ export function SectionDivider({
             tone === "mint" ? "bg-mint/[0.07]" : "bg-signal/[0.07]"
           }`}
         />
-      </motion.div>
+      </div>
     </div>
   );
 }

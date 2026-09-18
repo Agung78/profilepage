@@ -1,4 +1,4 @@
-import { Award, GraduationCap, Languages } from "lucide-react";
+import { Icon } from "@iconify/react";
 import { Reveal } from "@/components/reveal";
 import { certifications, education, languages } from "@/lib/content";
 
@@ -7,7 +7,7 @@ export function Credibility() {
     <div className="mt-12 grid gap-4 lg:grid-cols-3">
       <Reveal className="rounded-xl border border-ink-line/80 bg-ink-raised/50 p-6">
         <h3 className="flex items-center gap-2.5 font-mono text-xs uppercase tracking-[0.14em] text-paper">
-          <GraduationCap className="h-4 w-4 text-mint" aria-hidden="true" />
+          <Icon icon="solar:square-academic-cap-linear" className="h-4 w-4 text-mint" aria-hidden="true" />
           Education
         </h3>
         <ul className="mt-5 space-y-5">
@@ -17,7 +17,9 @@ export function Credibility() {
                 {item.school}
               </p>
               <p className="mt-0.5 text-sm text-muted">{item.credential}</p>
-              <p className="mt-1 font-mono text-xs text-subtle">
+              {/* Tertiary line — a date, not a claim — so it sits one step
+                  dimmer than `subtle` (REDESIGN.md §1's `--paper-dim`). */}
+              <p className="mt-1 font-mono text-xs text-paper-dim">
                 {item.period}
               </p>
             </li>
@@ -30,7 +32,7 @@ export function Credibility() {
         className="rounded-xl border border-ink-line/80 bg-ink-raised/50 p-6"
       >
         <h3 className="flex items-center gap-2.5 font-mono text-xs uppercase tracking-[0.14em] text-paper">
-          <Award className="h-4 w-4 text-signal" aria-hidden="true" />
+          <Icon icon="solar:medal-ribbon-linear" className="h-4 w-4 text-signal" aria-hidden="true" />
           Certifications
         </h3>
         <ul className="mt-5 space-y-3">
@@ -54,7 +56,7 @@ export function Credibility() {
         className="rounded-xl border border-ink-line/80 bg-ink-raised/50 p-6"
       >
         <h3 className="flex items-center gap-2.5 font-mono text-xs uppercase tracking-[0.14em] text-paper">
-          <Languages className="h-4 w-4 text-mint" aria-hidden="true" />
+          <Icon icon="solar:global-linear" className="h-4 w-4 text-mint" aria-hidden="true" />
           Languages
         </h3>
         <dl className="mt-5 space-y-3">

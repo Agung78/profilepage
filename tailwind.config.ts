@@ -32,6 +32,10 @@ const config: Config = {
         },
         paper: '#F5F3EE',
         subtle: '#8B8B96',
+        /* Tertiary copy, one step dimmer than `subtle` — REDESIGN.md §1.
+           #7A7A84 on `ink` is 4.71:1, so it still clears WCAG AA for normal
+           text rather than only qualifying at large-text thresholds. */
+        'paper-dim': '#7A7A84',
         mint: {
           DEFAULT: '#3DDC97',
           soft: '#7BEFC0',
@@ -41,6 +45,12 @@ const config: Config = {
           DEFAULT: '#4EA8F5',
           soft: '#9BCDFF',
           deep: '#0D2438',
+        },
+        /* Warm accent, spent exactly once (the final contact CTA) so it keeps
+           its meaning as "the one place that matters most" — REDESIGN.md §1. */
+        ember: {
+          DEFAULT: '#E88A4F',
+          soft: '#F4B080',
         },
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',

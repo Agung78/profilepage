@@ -1,13 +1,18 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronDown } from "lucide-react";
-import { motion, useReducedMotion } from "framer-motion";
+import { useRef, useState } from "react";
+import { Icon } from "@iconify/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import { Reveal } from "@/components/reveal";
 import { SystemDiagram } from "@/components/system-diagram";
-import { EASE } from "@/lib/motion";
+import { EASE, registerScrollTriggers } from "@/lib/motion";
+import { useMotionPrefs } from "@/hooks/use-motion-prefs";
 import { systemFlows, type CaseStudy as CaseStudyData } from "@/lib/content";
 import { cn } from "@/lib/utils";
+
+registerScrollTriggers();
 
 /** Disclosed detail. The challenge stays visible so every card reads on its own. */
 const DISCLOSED = [
@@ -22,13 +27,58 @@ export function CaseStudy({
   study: CaseStudyData;
   index: number;
 }) {
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = useMotionPrefs();
   /* First card opens by default: the section should never read as a wall of
      collapsed rows. */
   const [open, setOpen] = useState(index === 0);
   const panelId = `case-panel-${index}`;
+  const panelRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const visualRef = useRef<HTMLDivElement>(null);
   const accent = study.tone === "emerald" ? "text-mint" : "text-signal";
   const rail = study.tone === "emerald" ? "bg-mint" : "bg-signal";
+
+  useGSAP(
+    () => {
+      const panel = panelRef.current;
+      if (!panel) return;
+      if (reduceMotion) {
+        gsap.set(panel, { height: open ? "auto" : 0, opacity: open ? 1 : 0 });
+        return;
+      }
+      gsap.to(panel, {
+        height: open ? "auto" : 0,
+        opacity: open ? 1 : 0,
+        duration: 0.36,
+        ease: EASE,
+      });
+    },
+    { dependencies: [open, reduceMotion] }
+  );
+
+  /* Pinned case study visual (REDESIGN.md §4): on large screens, the diagram
+     panel holds in place while the text column scrolls past it, one of the
+     three uses this page reserves for a scrub/pin ScrollTrigger. Scoped to
+     `lg` (where the two-column layout exists) and skipped entirely under
+     reduced motion. */
+  useGSAP(
+    () => {
+      if (reduceMotion || !cardRef.current || !visualRef.current) return;
+      const mm = gsap.matchMedia();
+      mm.add("(min-width: 1024px)", () => {
+        const st = ScrollTrigger.create({
+          trigger: cardRef.current,
+          start: "top 88px",
+          end: "bottom bottom",
+          pin: visualRef.current,
+          pinSpacing: false,
+        });
+        return () => st.kill();
+      });
+      return () => mm.revert();
+    },
+    { dependencies: [reduceMotion] }
+  );
 
   return (
     <Reveal
@@ -48,7 +98,7 @@ export function CaseStudy({
         )}
       />
 
-      <div className="grid lg:grid-cols-[minmax(0,1fr)_18rem]">
+      <div ref={cardRef} className="grid lg:grid-cols-[minmax(0,1fr)_18rem]">
         <div className="order-2 p-6 sm:p-8 lg:order-1 lg:p-10">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs">
             <span className="text-subtle">
@@ -84,14 +134,10 @@ export function CaseStudy({
             </div>
           </div>
 
-          <motion.div
+          <div
+            ref={panelRef}
             id={panelId}
-            initial={false}
-            animate={{ height: open ? "auto" : 0, opacity: open ? 1 : 0 }}
-            transition={
-              reduceMotion ? { duration: 0 } : { duration: 0.36, ease: EASE }
-            }
-            className="overflow-hidden"
+            style={{ height: 0, opacity: 0, overflow: "hidden" }}
           >
             <dl className="space-y-5 pt-5">
               {DISCLOSED.map((item) => (
@@ -120,7 +166,7 @@ export function CaseStudy({
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
 
           <button
             type="button"
@@ -136,7 +182,8 @@ export function CaseStudy({
             <span aria-hidden="true">
               {open ? "Less" : "Approach & impact"}
             </span>
-            <ChevronDown
+            <Icon
+              icon="solar:alt-arrow-down-linear"
               aria-hidden="true"
               className={cn(
                 "h-3.5 w-3.5 transition-transform duration-300",
@@ -147,13 +194,21 @@ export function CaseStudy({
         </div>
 
         {/* Schematic panel: dot grid establishes it as a drawing surface so the
-            thin diagram doesn't float in an empty column on tall cards. */}
-        <div className="relative order-1 flex flex-col justify-center gap-4 overflow-hidden border-b border-ink-line/60 bg-ink-sunken/60 p-6 lg:order-2 lg:border-b-0 lg:border-l">
+            thin diagram doesn't float in an empty column on tall cards. Also
+            the pinned element on `lg` screens (see the ScrollTrigger above). */}
+        <div
+          ref={visualRef}
+          className="relative order-1 flex flex-col justify-center gap-4 overflow-hidden border-b border-ink-line/60 bg-ink-sunken/60 p-6 lg:order-2 lg:border-b-0 lg:border-l"
+        >
           <div
             aria-hidden="true"
             className="absolute inset-0 bg-dot-grid opacity-40 mask-fade-edges"
           />
           <div className="relative w-full max-w-[15rem] self-center">
+            {/* Original generated abstract system still, standing in for
+                unavailable case-study photography (REDESIGN.md §2's own
+                fallback): an authored data-graphic driven by the real
+                `systemFlows` entry for this case study, not a stock image. */}
             <SystemDiagram
               kind={study.icon}
               tone={study.tone}

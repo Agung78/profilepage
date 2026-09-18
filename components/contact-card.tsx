@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Check, Copy, Download, Github, Linkedin, Mail } from "lucide-react";
+import { Icon } from "@iconify/react";
 import { person } from "@/lib/content";
 
 export function ContactCard() {
@@ -30,9 +30,12 @@ export function ContactCard() {
           Email
         </p>
         <div className="mt-2 flex flex-wrap items-center gap-3">
+          {/* The page's one `ember` use: the final call-to-action, so the
+              warm accent keeps its meaning (REDESIGN.md §1) instead of
+              blending into the mint/signal system used everywhere else. */}
           <a
             href={`mailto:${person.email}`}
-            className="text-balance text-lg font-medium text-paper underline decoration-mint/40 decoration-2 underline-offset-[6px] transition-colors hover:decoration-mint sm:text-2xl"
+            className="text-balance text-lg font-medium text-paper underline decoration-ember/50 decoration-2 underline-offset-[6px] transition-colors hover:decoration-ember sm:text-2xl"
           >
             {person.email}
           </a>
@@ -43,12 +46,16 @@ export function ContactCard() {
           >
             {copied ? (
               <>
-                <Check className="h-3.5 w-3.5 text-mint" aria-hidden="true" />
+                <Icon
+                  icon="solar:check-circle-linear"
+                  className="h-3.5 w-3.5 text-mint"
+                  aria-hidden="true"
+                />
                 Copied
               </>
             ) : (
               <>
-                <Copy className="h-3.5 w-3.5" aria-hidden="true" />
+                <Icon icon="solar:copy-linear" className="h-3.5 w-3.5" aria-hidden="true" />
                 Copy
               </>
             )}
@@ -68,7 +75,7 @@ export function ContactCard() {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 rounded-md border border-ink-line bg-white/[0.02] px-4 py-2.5 text-sm text-paper transition-colors hover:border-mint/40 hover:bg-mint/[0.06]"
           >
-            <Linkedin className="h-4 w-4" aria-hidden="true" />
+            <Icon icon="solar:case-round-linear" className="h-4 w-4" aria-hidden="true" />
             LinkedIn
           </a>
         </li>
@@ -79,7 +86,7 @@ export function ContactCard() {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 rounded-md border border-ink-line bg-white/[0.02] px-4 py-2.5 text-sm text-paper transition-colors hover:border-mint/40 hover:bg-mint/[0.06]"
           >
-            <Github className="h-4 w-4" aria-hidden="true" />
+            <Icon icon="solar:code-square-linear" className="h-4 w-4" aria-hidden="true" />
             GitHub
           </a>
         </li>
@@ -90,7 +97,7 @@ export function ContactCard() {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 rounded-md bg-mint px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-mint-soft"
           >
-            <Download className="h-4 w-4" aria-hidden="true" />
+            <Icon icon="solar:download-linear" className="h-4 w-4" aria-hidden="true" />
             Résumé (PDF)
           </a>
         </li>
@@ -103,15 +110,25 @@ export function SocialRow() {
   return (
     <ul className="flex items-center gap-2">
       {[
-        { href: person.linkedin, label: "LinkedIn", Icon: Linkedin, external: true },
-        { href: person.github, label: "GitHub", Icon: Github, external: true },
+        {
+          href: person.linkedin,
+          label: "LinkedIn",
+          icon: "solar:case-round-linear",
+          external: true,
+        },
+        {
+          href: person.github,
+          label: "GitHub",
+          icon: "solar:code-square-linear",
+          external: true,
+        },
         {
           href: `mailto:${person.email}`,
           label: "Email",
-          Icon: Mail,
+          icon: "solar:letter-linear",
           external: false,
         },
-      ].map(({ href, label, Icon, external }) => (
+      ].map(({ href, label, icon, external }) => (
         <li key={label}>
           <a
             href={href}
@@ -122,7 +139,7 @@ export function SocialRow() {
           >
             {/* Icon-only links previously had no accessible name at all. */}
             <span className="sr-only">{label}</span>
-            <Icon className="h-4 w-4" aria-hidden="true" />
+            <Icon icon={icon} className="h-4 w-4" aria-hidden="true" />
           </a>
         </li>
       ))}

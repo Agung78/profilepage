@@ -1,8 +1,13 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
-import { EASE, ONCE_IN_VIEW } from "@/lib/motion";
+import { useRef } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { registerScrollTriggers, EASE } from "@/lib/motion";
+import { useMotionPrefs } from "@/hooks/use-motion-prefs";
 import { systemFlows, type CaseStudy } from "@/lib/content";
+
+registerScrollTriggers();
 
 const TONES = {
   emerald: { line: "#3DDC97", soft: "#7BEFC0" },
@@ -15,25 +20,6 @@ const BOX_X = 26;
 const BOX_W = 188;
 const CENTER = BOX_X + BOX_W / 2;
 
-const container = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.11, delayChildren: 0.04 } },
-};
-
-const boxIn = {
-  hidden: { opacity: 0, y: 10 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.42, ease: EASE } },
-};
-
-const drawIn = {
-  hidden: { pathLength: 0, opacity: 0 },
-  show: {
-    pathLength: 1,
-    opacity: 1,
-    transition: { duration: 0.5, ease: "easeInOut" as const },
-  },
-};
-
 type Props = {
   kind: CaseStudy["icon"];
   tone: CaseStudy["tone"];
@@ -42,17 +28,23 @@ type Props = {
 };
 
 /**
- * Per-case-study system flow.
+ * Per-case-study system flow — one of the "original generated abstract
+ * system stills" REDESIGN.md §2 calls for in place of unavailable case-study
+ * photography: an authored data-graphic driven by the real `systemFlows`
+ * entry for this case study, not a stock image or a fabricated screenshot.
  *
  * Each stage restates a claim from the case-study prose, so the diagram is an
- * index of the text rather than decoration. Stage boxes fade up and connectors
- * draw themselves exactly once, when the card first enters the viewport.
+ * index of the text rather than decoration. Stage boxes fade up and
+ * connectors draw themselves once, when the card first enters the viewport —
+ * an entrance, not a scrub or a pin, so it's an IntersectionObserver driving
+ * paused GSAP tweens rather than a ScrollTrigger.
  *
- * Under `prefers-reduced-motion` the identical diagram renders fully drawn — no
- * meaning lives in the animation.
+ * Under `prefers-reduced-motion` the identical diagram renders fully drawn —
+ * no meaning lives in the animation itself.
  */
 export function SystemDiagram({ kind, tone, label }: Props) {
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = useMotionPrefs();
+  const svgRef = useRef<SVGSVGElement>(null);
   const flow = systemFlows[kind];
   const palette = TONES[tone];
 
@@ -61,16 +53,65 @@ export function SystemDiagram({ kind, tone, label }: Props) {
     .map((stage) => stage.lines.join(" "))
     .join(" → ")}`;
 
+  useGSAP(
+    () => {
+      if (reduceMotion || !svgRef.current) return;
+      const boxes = svgRef.current.querySelectorAll("[data-box]");
+      const connectors = svgRef.current.querySelectorAll<SVGPathElement>(
+        "[data-connector]"
+      );
+
+      const tl = gsap.timeline({ paused: true });
+      connectors.forEach((path) => {
+        const length = path.getTotalLength();
+        gsap.set(path, { strokeDasharray: length, strokeDashoffset: length });
+      });
+
+      flow.stages.forEach((_, index) => {
+        const connector = connectors[index - 1];
+        if (connector) {
+          tl.to(
+            connector,
+            { strokeDashoffset: 0, opacity: 1, duration: 0.5, ease: "power2.inOut" },
+            index * 0.11
+          );
+        }
+        const box = boxes[index];
+        if (box) {
+          tl.fromTo(
+            box,
+            { opacity: 0, y: 10 },
+            { opacity: 1, y: 0, duration: 0.42, ease: EASE },
+            index * 0.11 + 0.04
+          );
+        }
+      });
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (!entries[0]?.isIntersecting) return;
+          tl.play();
+          observer.disconnect();
+        },
+        { threshold: 0, rootMargin: "0px 0px -12% 0px" }
+      );
+      observer.observe(svgRef.current);
+
+      return () => {
+        observer.disconnect();
+        tl.kill();
+      };
+    },
+    { dependencies: [reduceMotion, kind] }
+  );
+
   return (
-    <motion.svg
+    <svg
+      ref={svgRef}
       viewBox={`0 0 240 ${height}`}
       role="img"
       aria-label={description}
       className="h-auto w-full"
-      variants={reduceMotion ? undefined : container}
-      initial={reduceMotion ? undefined : "hidden"}
-      whileInView={reduceMotion ? undefined : "show"}
-      viewport={ONCE_IN_VIEW}
     >
       {flow.stages.map((stage, index) => {
         const y = index * (BOX_H + GAP);
@@ -81,19 +122,19 @@ export function SystemDiagram({ kind, tone, label }: Props) {
           <g key={index}>
             {/* Connector into the next stage, plus its arrow head. */}
             {!isLast ? (
-              <motion.path
+              <path
+                data-connector=""
                 d={`M${CENTER} ${y + BOX_H} V${y + BOX_H + GAP - 7} m-4 -5 l4 5 l4 -5`}
                 fill="none"
                 stroke={palette.line}
                 strokeWidth="1.4"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                opacity="0.75"
-                variants={reduceMotion ? undefined : drawIn}
+                opacity={reduceMotion ? 0.75 : 0}
               />
             ) : null}
 
-            <motion.g variants={reduceMotion ? undefined : boxIn}>
+            <g data-box="" style={reduceMotion ? undefined : { opacity: 0 }}>
               <rect
                 x={BOX_X}
                 y={y}
@@ -129,10 +170,10 @@ export function SystemDiagram({ kind, tone, label }: Props) {
                   {line}
                 </text>
               ))}
-            </motion.g>
+            </g>
           </g>
         );
       })}
-    </motion.svg>
+    </svg>
   );
 }

@@ -1,14 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { Download, Menu, X } from "lucide-react";
-import {
-  motion,
-  useReducedMotion,
-  useScroll,
-  useSpring,
-} from "framer-motion";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Icon } from "@iconify/react";
+import gsap from "gsap";
 import { Monogram } from "@/components/monogram";
+import { useMotionPrefs } from "@/hooks/use-motion-prefs";
 import { HEADER_OFFSET } from "@/lib/motion";
 import { navItems, person } from "@/lib/content";
 import { cn } from "@/lib/utils";
@@ -16,21 +12,37 @@ import { cn } from "@/lib/utils";
 const SECTION_IDS = navItems.map((item) => item.href.slice(1));
 
 export function SiteNav() {
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = useMotionPrefs();
   const [active, setActive] = useState<string>("");
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const progressRef = useRef<HTMLDivElement>(null);
 
-  /* Slim scroll-progress indicator. This is a readout of scroll position rather
-     than decoration, so it stays under reduced motion — only the spring
-     smoothing is dropped. */
-  const { scrollYProgress } = useScroll();
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 120,
-    damping: 30,
-    restDelta: 0.001,
-  });
-  const progress = reduceMotion ? scrollYProgress : smoothProgress;
+  /* Slim scroll-progress indicator. This is a readout of scroll position
+     rather than decoration, so it stays under reduced motion — only the
+     smoothing is dropped (a direct set instead of an eased quickTo). */
+  useEffect(() => {
+    const bar = progressRef.current;
+    if (!bar) return;
+
+    const setScale = reduceMotion
+      ? (value: number) => gsap.set(bar, { scaleX: value })
+      : gsap.quickTo(bar, "scaleX", { duration: 0.25, ease: "power2.out" });
+
+    const onScroll = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = max > 0 ? window.scrollY / max : 0;
+      setScale(progress);
+    };
+
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [reduceMotion]);
 
   /* Active-section highlight. IntersectionObserver rather than a scroll
      listener so this stays off the main thread during scroll. */
@@ -83,9 +95,10 @@ export function SiteNav() {
   /**
    * Anchor scrolling with an explicit header offset.
    *
-   * CSS `scroll-padding-top` already handles this, but doing the arithmetic here
-   * keeps the landing position identical across browsers and lets the motion
-   * preference decide between a smooth and an instant jump.
+   * Routes through the live Lenis instance (`window.__lenis`) when one
+   * exists, so the smooth-scroll engine and the anchor jump never fight each
+   * other. Falls back to native `window.scrollTo` under reduced motion, where
+   * Lenis is never instantiated.
    */
   const scrollToSection = useCallback(
     (event: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -94,10 +107,15 @@ export function SiteNav() {
       event.preventDefault();
       const top =
         target.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
-      window.scrollTo({
-        top: Math.max(0, top),
-        behavior: reduceMotion ? "auto" : "smooth",
-      });
+
+      if (window.__lenis) {
+        window.__lenis.scrollTo(Math.max(0, top), { duration: 1.1 });
+      } else {
+        window.scrollTo({
+          top: Math.max(0, top),
+          behavior: reduceMotion ? "auto" : "smooth",
+        });
+      }
       window.history.replaceState(null, "", href);
       setOpen(false);
     },
@@ -162,7 +180,7 @@ export function SiteNav() {
             rel="noopener noreferrer"
             className="ml-3 inline-flex items-center gap-2 rounded-md bg-mint px-3.5 py-2 text-sm font-semibold text-ink transition-[background-color,transform] duration-300 hover:-translate-y-0.5 hover:bg-mint-soft"
           >
-            <Download className="h-4 w-4" aria-hidden="true" />
+            <Icon icon="solar:download-linear" className="h-4 w-4" aria-hidden="true" />
             Résumé
           </a>
         </div>
@@ -176,15 +194,14 @@ export function SiteNav() {
           className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-ink-line text-paper transition-colors duration-300 hover:border-mint/40 md:hidden"
         >
           {open ? (
-            <X className="h-5 w-5" aria-hidden="true" />
+            <Icon icon="solar:close-square-linear" className="h-5 w-5" aria-hidden="true" />
           ) : (
-            <Menu className="h-5 w-5" aria-hidden="true" />
+            <Icon icon="solar:hamburger-menu-linear" className="h-5 w-5" aria-hidden="true" />
           )}
         </button>
       </nav>
 
-      {/* Mobile sheet. Previously there was no mobile navigation at all — the
-          links and the résumé button were both `hidden md:flex`. */}
+      {/* Mobile sheet. */}
       <div
         id="mobile-nav"
         hidden={!open}
@@ -213,7 +230,7 @@ export function SiteNav() {
               onClick={() => setOpen(false)}
               className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-mint px-4 py-3 text-sm font-semibold text-ink"
             >
-              <Download className="h-4 w-4" aria-hidden="true" />
+              <Icon icon="solar:download-linear" className="h-4 w-4" aria-hidden="true" />
               Download résumé (PDF)
             </a>
           </li>
@@ -221,9 +238,10 @@ export function SiteNav() {
       </div>
 
       {/* Progress rail, pinned to the header's bottom edge. */}
-      <motion.div
+      <div
+        ref={progressRef}
         aria-hidden="true"
-        style={{ scaleX: progress }}
+        style={{ transform: "scaleX(0)" }}
         className="h-[2px] origin-left bg-gradient-to-r from-mint via-mint-soft to-signal"
       />
     </header>
