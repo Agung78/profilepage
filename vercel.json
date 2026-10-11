@@ -4,6 +4,10 @@
   ],
   "headers": [
     {
+      "source": "/(apple-icon|opengraph-image)",
+      "headers": [{ "key": "Content-Type", "value": "image/png" }]
+    },
+    {
       "source": "/",
       "headers": [{ "key": "Content-Type", "value": "text/html; charset=utf-8" }]
     }
