@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import Script from "next/script";
 import { SmoothScroll } from "@/components/smooth-scroll";
 import {
   SITE_URL,
@@ -26,7 +27,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 const DESCRIPTION =
-  "Full-stack engineer spanning product UX, cloud infrastructure, fintech and data platforms. Currently Full Stack Engineer at HeyRCG! and Co-Founder & CTO at AI WorkLabs.";
+  "Engineer building product UX, cloud infrastructure, fintech and data platforms. Full Stack Engineer at HeyRCG, Co-Founder & CTO at AI WorkLabs.";
 
 export const metadata: Metadata = {
   /* Without metadataBase, Next resolves social image and canonical URLs
@@ -81,7 +82,7 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  icons: { icon: "/favicon.ico" },
+  icons: { icon: "/favicon.ico", apple: "/apple-icon" },
 };
 
 /** Person schema, kept in sync with the CV rather than the old CTO-only claim. */
@@ -116,6 +117,8 @@ const personSchema = {
   sameAs: [person.linkedin, person.github],
 };
 
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
+
 export default function RootLayout({
   children,
 }: {
@@ -149,6 +152,17 @@ export default function RootLayout({
           Skip to content
         </a>
         <SmoothScroll>{children}</SmoothScroll>
+        {GA_ID && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="ga" strategy="afterInteractive">
+              {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${GA_ID}');`}
+            </Script>
+          </>
+        )}
       </body>
     </html>
   );

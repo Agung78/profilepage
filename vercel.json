@@ -1,5 +1,11 @@
 {
   "rewrites": [
     { "source": "/googlebafc5f93351743dd.html", "destination": "/googlebafc5f93351743dd" }
+  ],
+  "headers": [
+    {
+      "source": "/",
+      "headers": [{ "key": "Content-Type", "value": "text/html; charset=utf-8" }]
+    }
   ]
 }
