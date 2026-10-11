@@ -1,4 +1,4 @@
-import { Icon } from "@iconify/react";
+import { Icon } from "@/lib/icons";
 import { CapabilityMap } from "@/components/capability-map";
 import { CareerTimeline } from "@/components/career-timeline";
 import { CaseStudy } from "@/components/case-study";

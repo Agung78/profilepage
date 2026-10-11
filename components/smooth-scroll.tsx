@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import Lenis from "lenis";
+import type Lenis from "lenis";
 import { useMotionPrefs } from "@/hooks/use-motion-prefs";
 import { gsap, ScrollTrigger } from "@/lib/motion";
 
@@ -39,44 +39,32 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (reduceMotion) return;
 
-    const lenis = new Lenis({
-      autoRaf: false,
-      smoothWheel: true,
-    });
-
-    window.__lenis = lenis;
-    lenis.on("scroll", ScrollTrigger.update);
-
-    const tick = (time: number) => {
-      lenis.raf(time * 1000);
-    };
-    gsap.ticker.add(tick);
-    gsap.ticker.lagSmoothing(0);
-
     const refresh = () => ScrollTrigger.refresh();
     document.fonts?.ready?.then(refresh).catch(() => {});
 
-    /* No hero media exists today (the hero is typographic — REDESIGN.md §9
-       Q1's own fallback), so this selector currently never matches and the
-       block below is a no-op. Left in place per §4's contract: if a hero
-       image/video is ever added with `data-hero-media`, refresh timing is
-       already wired for it. */
-    const heroMedia = document.querySelector<HTMLImageElement>(
-      "[data-hero-media]"
-    );
-    if (heroMedia) {
-      if (heroMedia.complete) {
-        refresh();
-      } else {
-        heroMedia.addEventListener("load", refresh, { once: true });
-      }
+    /* Lenis only smooths wheel input (touch stays native), so on coarse
+       pointers it is pure overhead — don't even load it there. */
+    let lenis: Lenis | undefined;
+    let tick: ((time: number) => void) | undefined;
+    let cancelled = false;
+    if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+      import("lenis").then(({ default: LenisCtor }) => {
+        if (cancelled) return;
+        const instance = new LenisCtor({ autoRaf: false, smoothWheel: true });
+        lenis = instance;
+        window.__lenis = instance;
+        instance.on("scroll", ScrollTrigger.update);
+        tick = (time: number) => instance.raf(time * 1000);
+        gsap.ticker.add(tick);
+        gsap.ticker.lagSmoothing(0);
+      });
     }
 
     return () => {
-      if (heroMedia) heroMedia.removeEventListener("load", refresh);
-      gsap.ticker.remove(tick);
+      cancelled = true;
+      if (tick) gsap.ticker.remove(tick);
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-      lenis.destroy();
+      lenis?.destroy();
       if (window.__lenis === lenis) window.__lenis = undefined;
     };
   }, [reduceMotion]);

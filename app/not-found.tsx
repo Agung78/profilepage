@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Icon } from "@iconify/react";
+import { Icon } from "@/lib/icons";
 
 export const metadata = { title: "Page not found" };
 

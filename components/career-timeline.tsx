@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Icon } from "@iconify/react";
+import { Icon } from "@/lib/icons";
 import { EASE, gsap, useGSAP } from "@/lib/motion";
 import { useMotionPrefs } from "@/hooks/use-motion-prefs";
 import { roles, type Role } from "@/lib/content";

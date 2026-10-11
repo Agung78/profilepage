@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { Icon } from "@iconify/react";
+import { Icon } from "@/lib/icons";
 import { CursorSpotlight } from "@/components/cursor-spotlight";
 import { Monogram } from "@/components/monogram";
 import { ScrollCue } from "@/components/scroll-cue";

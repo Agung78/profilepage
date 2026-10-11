@@ -1,4 +1,4 @@
-import { Icon } from "@iconify/react";
+import { Icon } from "@/lib/icons";
 import { Reveal } from "@/components/reveal";
 import { certifications, education, languages } from "@/lib/content";
 

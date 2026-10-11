@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Icon } from "@iconify/react";
+import { Icon } from "@/lib/icons";
 import { Reveal } from "@/components/reveal";
 import { SystemDiagram } from "@/components/system-diagram";
 import { EASE, gsap, ScrollTrigger, useGSAP } from "@/lib/motion";

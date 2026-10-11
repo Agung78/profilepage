@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Icon } from "@iconify/react";
+import { Icon } from "@/lib/icons";
 import { person } from "@/lib/content";
 
 export function ContactCard() {

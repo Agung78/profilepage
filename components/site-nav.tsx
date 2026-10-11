@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Icon } from "@iconify/react";
+import { Icon } from "@/lib/icons";
 import gsap from "gsap";
 import { Monogram } from "@/components/monogram";
 import { useMotionPrefs } from "@/hooks/use-motion-prefs";
