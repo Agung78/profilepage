@@ -139,7 +139,7 @@ export function SiteNav() {
           href="#top"
           onClick={(event) => scrollToSection(event, "#top")}
           className="flex items-center gap-2.5 rounded-md"
-          aria-label={`${person.name} — back to top`}
+          aria-label={`${person.shortName} — back to top`}
         >
           <Monogram size={30} />
           <span className="font-mono text-sm font-semibold tracking-tight text-paper">

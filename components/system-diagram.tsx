@@ -58,9 +58,10 @@ export function SystemDiagram({ kind, tone, label }: Props) {
       );
 
       const tl = gsap.timeline({ paused: true });
-      connectors.forEach((path) => {
-        const length = path.getTotalLength();
-        gsap.set(path, { strokeDasharray: length, strokeDashoffset: length });
+      /* Read every length first, then write — interleaving forces a reflow per path. */
+      const lengths = Array.from(connectors, (path) => path.getTotalLength());
+      connectors.forEach((path, i) => {
+        gsap.set(path, { strokeDasharray: lengths[i], strokeDashoffset: lengths[i] });
       });
 
       flow.stages.forEach((_, index) => {
