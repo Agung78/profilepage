@@ -25,7 +25,7 @@ export default function NotFound() {
           className="mt-8 inline-flex w-fit items-center gap-2 rounded-md bg-mint px-5 py-3 text-sm font-semibold text-ink transition-colors hover:bg-mint-soft"
         >
           <Icon icon="solar:arrow-left-linear" className="h-4 w-4" aria-hidden="true" />
-          Back to the portfolio
+          Back to the main page
         </Link>
       </main>
     </>
