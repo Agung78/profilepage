@@ -102,7 +102,7 @@ export function Hero() {
       <CursorSpotlight />
 
       <div className="relative mx-auto w-full max-w-6xl px-5 sm:px-8">
-        <div
+        {/* <div
           data-hero-rise={HERO_STEPS.nav}
           style={restState}
           className="flex items-center gap-3"
@@ -118,7 +118,7 @@ export function Hero() {
             </span>
             {person.availability}
           </span>
-        </div>
+        </div> */}
 
         {/* Full-bleed typographic focal point — the hero's one authored
             "asset" in place of the unavailable portrait (REDESIGN.md §9 Q1).
