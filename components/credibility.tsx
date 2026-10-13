@@ -17,9 +17,9 @@ export function Credibility() {
       </div>
       <div>
         <h3 className="font-display text-xl text-ink">Certifications</h3>
-        <ul className="mt-4 space-y-4 text-sm">
+        <ul className="mt-4 space-y-2 text-sm">
           {certifications.map((cert) => (
-            <li key={cert.url} className="border-b border-line pb-4 last:border-0">
+            <li key={cert.url} className="border-b border-line pb-2 last:border-0">
               <a
                 href={cert.url}
                 target="_blank"
