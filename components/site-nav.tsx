@@ -25,7 +25,7 @@ export function SiteNav() {
         aria-label={`${person.shortName} primary`}
         className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8"
       >
-        <a href="#top" className="font-display text-lg text-ink">
+        <a href="#top" className="-my-3 py-3 font-display text-lg text-ink">
           {person.shortName}
         </a>
 

@@ -32,14 +32,14 @@ export function ContactCard() {
         <div className="mt-2 flex flex-wrap items-center gap-3">
                     <a
             href={`mailto:${person.email}`}
-            className="break-all font-display text-xl text-paper underline decoration-flare-bright decoration-2 transition-colors hover:text-flare-bright sm:break-normal sm:text-4xl"
+            className="inline-block break-all py-2 font-display text-xl text-paper underline decoration-flare-bright decoration-2 transition-colors hover:text-flare-bright sm:break-normal sm:text-4xl"
           >
             {person.email}
           </a>
           <button
             type="button"
             onClick={copyEmail}
-            className="inline-flex items-center gap-1.5 border border-paper/60 px-2.5 py-1.5 font-mono text-xs text-paper transition-colors hover:bg-paper hover:text-ink"
+            className="inline-flex min-h-11 items-center gap-1.5 border border-paper/60 px-3.5 py-1.5 font-mono text-xs text-paper transition-colors hover:bg-paper hover:text-ink"
           >
             {copied ? (
               <>
@@ -70,7 +70,7 @@ export function ContactCard() {
             href={person.linkedin}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 border border-paper/60 px-4 py-2.5 text-sm font-semibold text-paper transition-colors hover:bg-paper hover:text-ink"
+            className="inline-flex items-center gap-2 border border-paper/60 min-h-11 px-4 py-2.5 text-sm font-semibold text-paper transition-colors hover:bg-paper hover:text-ink"
           >
             <Icon icon="solar:case-round-linear" className="h-4 w-4" aria-hidden="true" />
             LinkedIn
@@ -81,7 +81,7 @@ export function ContactCard() {
             href={person.github}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 border border-paper/60 px-4 py-2.5 text-sm font-semibold text-paper transition-colors hover:bg-paper hover:text-ink"
+            className="inline-flex items-center gap-2 border border-paper/60 min-h-11 px-4 py-2.5 text-sm font-semibold text-paper transition-colors hover:bg-paper hover:text-ink"
           >
             <Icon icon="solar:code-square-linear" className="h-4 w-4" aria-hidden="true" />
             GitHub
@@ -92,7 +92,7 @@ export function ContactCard() {
             href={person.resume}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-paper px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-flare-bright"
+            className="inline-flex items-center gap-2 bg-paper min-h-11 px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-flare-bright"
           >
             <Icon icon="solar:download-linear" className="h-4 w-4" aria-hidden="true" />
             Résumé (PDF)
@@ -132,7 +132,7 @@ export function SocialRow() {
             {...(external
               ? { target: "_blank", rel: "noopener noreferrer" }
               : {})}
-            className="inline-flex h-9 w-9 items-center justify-center border border-paper/60 text-paper transition-colors hover:bg-paper hover:text-ink"
+            className="inline-flex h-11 w-11 items-center justify-center border border-paper/60 text-paper transition-colors hover:bg-paper hover:text-ink"
           >
             {/* Icon-only links previously had no accessible name at all. */}
             <span className="sr-only">{label}</span>
