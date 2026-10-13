@@ -29,9 +29,6 @@ export function Credibility() {
                 {cert.name}
                 <span className="sr-only"> (opens in new tab)</span>
               </a>
-              <p className="mt-1 font-mono text-xs text-mute tabular">
-                {cert.issuer} · {cert.date} · {cert.credit.replace(" · ", " ")}
-              </p>
             </li>
           ))}
         </ul>
