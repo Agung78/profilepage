@@ -115,9 +115,11 @@ const personSchema = {
     "@type": "EducationalOrganization",
     name: item.school,
   })),
-  hasCredential: certifications.map((name) => ({
+  hasCredential: certifications.map((cert) => ({
     "@type": "EducationalOccupationalCredential",
-    name,
+    name: cert.name,
+    url: cert.url,
+    recognizedBy: { "@type": "Organization", name: cert.issuer },
   })),
   knowsAbout: Array.from(
     new Set(stackGroups.flatMap((group) => group.items))

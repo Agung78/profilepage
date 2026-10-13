@@ -270,10 +270,46 @@ export const education = [
 ] as const;
 
 export const certifications = [
-  "Fundamentals of Machine Learning",
-  "Fundamentals of Lakehouse Architecture",
-  "Fundamentals of Structured Streaming",
-  "Business Continuity Management — Awareness Training",
+  {
+    name: "Working with Difficult People",
+    issuer: "LinkedIn Learning",
+    date: "Aug 2024",
+    credit: "PMI · 0.75 PDUs",
+    url:
+      "https://www.linkedin.com/learning/certificates/24bf91222ef5a9dca6add4833d89e08e5d2ddbb0bceac6d1d46ec704738a5c88",
+  },
+  {
+    name: "Leading Projects",
+    issuer: "LinkedIn Learning",
+    date: "Aug 2024",
+    credit: "PMI · 2.25 PDUs",
+    url:
+      "https://www.linkedin.com/learning/certificates/8e47937f0206f17d37a34b711fff17bca32bf028bad6e114b432f718b310036a",
+  },
+  {
+    name: "Cert Prep: PMI Agile Certified Practitioner (PMI-ACP)®",
+    issuer: "LinkedIn Learning",
+    date: "Apr 2022",
+    credit: "PMI · 1.75 PDUs",
+    url:
+      "https://www.linkedin.com/learning/certificates/46f0d674eb7b9dc756b79a0911ca2ded5e6c87e240f18a6231d4ae31739f9355",
+  },
+  {
+    name: "Critical Thinking for Better Judgment and Decision-Making",
+    issuer: "LinkedIn Learning",
+    date: "Aug 2021",
+    credit: "PMI · 0.75 PDUs",
+    url:
+      "https://www.linkedin.com/learning/certificates/b6e7239fc8da954ca449733610441ac9dac24822d3e6e5ed6697a7799ca7a085",
+  },
+  {
+    name: "Artificial Intelligence Foundations: Machine Learning",
+    issuer: "LinkedIn Learning",
+    date: "Jun 2021",
+    credit: "NASBA · 1.80 CPE",
+    url:
+      "https://www.linkedin.com/learning/certificates/9cfe7d7972bbe269e1bf43804404b30703bfafb18469a508d225380f2b36fbd1",
+  },
 ] as const;
 
 /** Proficiency labels are taken directly from the CV. */

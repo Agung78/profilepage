@@ -17,9 +17,22 @@ export function Credibility() {
       </div>
       <div>
         <h3 className="font-display text-xl text-ink">Certifications</h3>
-        <ul className="mt-4 space-y-2 text-sm">
+        <ul className="mt-4 space-y-4 text-sm">
           {certifications.map((cert) => (
-            <li key={cert}>{cert}</li>
+            <li key={cert.url} className="border-b border-line pb-4 last:border-0">
+              <a
+                href={cert.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-ink transition-colors hover:text-flare"
+              >
+                {cert.name}
+                <span className="sr-only"> (opens in new tab)</span>
+              </a>
+              <p className="mt-1 font-mono text-xs text-mute tabular">
+                {cert.issuer} · {cert.date} · {cert.credit.replace(" · ", " ")}
+              </p>
+            </li>
           ))}
         </ul>
       </div>
