@@ -3,173 +3,58 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    /* Editorial ink palette. Single dark theme — no light-mode variant, so
-       there is one set of values rather than a :root/.dark pair. */
-    --ink: 240 20% 4%;
-    --line: 240 11% 15%;
-    --radius: 0.75rem;
-
-    /* shadcn primitive tokens (button/card/badge read these). Dark only. */
-    --background: 240 20% 4%;
-    --foreground: 40 20% 95%;
-    --card: 240 14% 7%;
-    --card-foreground: 40 20% 95%;
-    --popover: 240 14% 7%;
-    --popover-foreground: 40 20% 95%;
-    --primary: 156 69% 55%;
-    --primary-foreground: 240 20% 4%;
-    --secondary: 240 11% 13%;
-    --secondary-foreground: 40 20% 95%;
-    --muted: 240 11% 13%;
-    --muted-foreground: 240 6% 70%;
-    --accent: 240 11% 15%;
-    --accent-foreground: 40 20% 95%;
-    --destructive: 0 62% 45%;
-    --destructive-foreground: 40 20% 95%;
-    --border: 240 11% 15%;
-    --input: 240 11% 15%;
-    --ring: 156 69% 55%;
-  }
-
-  * {
-    border-color: hsl(var(--line) / 0.7);
-  }
-
   html {
-    /* Fixed header is 64px; keep anchor targets clear of it. */
-    scroll-padding-top: 5.5rem;
+    scroll-padding-top: 5rem;
     -webkit-tap-highlight-color: transparent;
+    scrollbar-color: #17150f #eee9de;
+    scrollbar-width: thin;
   }
 
   body {
-    background-color: hsl(var(--ink));
-    color: theme("colors.paper");
-    font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+    background-color: theme("colors.paper.DEFAULT");
+    color: theme("colors.ink.soft");
+    font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
   }
 
-  /* Anchored sections must clear the fixed header even without smooth scroll. */
   [id] {
-    scroll-margin-top: 5.5rem;
+    scroll-margin-top: 5rem;
   }
 
   :focus-visible {
-    outline: 2px solid theme("colors.mint.DEFAULT");
+    outline: 2px solid theme("colors.flare.DEFAULT");
     outline-offset: 3px;
-    border-radius: 4px;
+    border-radius: 2px;
+  }
+
+  .on-ink :focus-visible {
+    outline-color: theme("colors.flare.bright");
   }
 
   ::selection {
-    background-color: theme("colors.mint.DEFAULT");
-    color: hsl(var(--ink));
+    background-color: theme("colors.ink.DEFAULT");
+    color: theme("colors.paper.DEFAULT");
+  }
+
+  a {
+    text-underline-offset: 0.25em;
   }
 }
 
 @layer utilities {
-  /* Tailwind's own .font-mono lives in this layer, so the override must too —
-     otherwise ui-monospace wins on source order and JetBrains Mono never loads. */
-  .font-mono {
-    font-family: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular,
-      Menlo, monospace;
-  }
-
   .text-balance {
     text-wrap: balance;
   }
-
   .text-pretty {
     text-wrap: pretty;
   }
-
-  /* Dot backdrop used behind the case-study and capability-map panels. */
-  .bg-dot-grid {
-    background-image: radial-gradient(
-      hsl(var(--line) / 1) 1px,
-      transparent 1px
-    );
-    background-size: 28px 28px;
-  }
-
-  .mask-fade-b {
-    -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
-    mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
-  }
-
-  .mask-fade-edges {
-    -webkit-mask-image: radial-gradient(
-      ellipse 75% 65% at 50% 40%,
-      black 45%,
-      transparent 100%
-    );
-    mask-image: radial-gradient(
-      ellipse 75% 65% at 50% 40%,
-      black 45%,
-      transparent 100%
-    );
-  }
-
-  /* Hairline rule that fades at both ends — used as a section divider. */
-  .rule-fade {
-    background-image: linear-gradient(
-      to right,
-      transparent,
-      hsl(var(--line)),
-      transparent
-    );
-  }
-
-  /* Alternating dot-grid phase. Gives consecutive sections a different texture
-     origin so the seam between them shifts rather than cutting. */
-  .grid-phase-a {
-    background-position: 0 0;
-  }
-
-  .grid-phase-b {
-    background-position: 14px 14px;
+  .tabular {
+    font-variant-numeric: tabular-nums;
   }
 }
 
-@keyframes breathe {
-  0%,
-  100% {
-    opacity: 0.5;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-.animate-breathe {
-  animation: breathe 3.2s ease-in-out infinite;
-}
-
-/* Scroll cue: one dash falling down the track. Transform/opacity only, and
-   switched off entirely under reduced motion by the media query below. */
-@keyframes cue-trace {
-  0% {
-    transform: translateY(-100%);
-    opacity: 0;
-  }
-  25%,
-  75% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(300%);
-    opacity: 0;
-  }
-}
-
-.cue-trace {
-  animation: cue-trace 2.8s ease-in-out infinite;
-}
-
-/* Respect the OS motion preference everywhere. GSAP tweens are gated in
-   JavaScript via `useMotionPrefs()`, but this is the backstop for the plain
-   CSS animations above (`.cue-trace`, `.animate-breathe`) and for anything
-   that ships before hydration. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -182,13 +67,7 @@
 }
 
 @media print {
-  nav,
-  .no-print {
+  nav {
     display: none !important;
-  }
-
-  body {
-    background: #fff;
-    color: #000;
   }
 }

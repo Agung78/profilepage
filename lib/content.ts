@@ -1,7 +1,6 @@
 /**
  * Single source of truth for every piece of profile copy.
- * Sourced verbatim from the LinkedIn CV export (Profile.pdf, Aug 2026).
- * Update this file — never hardcode content in components.
+ * Sourced from LinkedIn (2026-10-13). Update this file, never hardcode copy in components.
  */
 
 export const SITE_URL = "https://agoengdenisa.vercel.app";
@@ -10,8 +9,8 @@ export const person = {
   name: "Mas Agung Denisa Bekam",
   shortName: "Agoeng Denisa",
   headline:
-    "Full-Stack Engineer | Node.js, Next.js, Python | Building Scalable Web & Data Solutions",
-  currentRole: "Full Stack Engineer",
+    "Forward Deployed & Platform Engineer | Vue · NestJS · Next.js · GCP | Data Pipelines (BigQuery, Databricks) | Co-Founder @AIWorkLabs",
+  currentRole: "Forward Deployed Engineer",
   currentCompany: "HeyRCG!",
   concurrentRole: "Co-Founder & CTO",
   concurrentCompany: "AI WorkLabs",
@@ -21,246 +20,145 @@ export const person = {
   linkedin: "https://www.linkedin.com/in/agung78/",
   github: "https://github.com/Agung78/",
   resume: "https://drive.google.com/file/d/1_RWa2N-laQPTV45hVfhIcBNuyfB0fBHG/view?usp=sharing",
-  availability: "Open to senior full-stack & platform roles",
+  availability: "Open to Forward Deployed, Solutions and Platform engineering roles",
 } as const;
 
 export const summary = [
-  "From the data pipeline to the pixel, I bridge the gap between complex enterprise architecture and intuitive user experiences.",
-  "As a full-stack engineer and former Assistant Professor, I don't just build applications — I translate technical complexity into business value. Whether it's migrating legacy systems to modern Next.js architectures or optimizing massive data flows, I focus on scalability, security, and the human at the other end of the screen.",
+  "I go where the client's problem is, learn it from the inside, and ship the system that solves it to production.",
+  "Former Assistant Professor, now embedded with clients at HeyRCG! in Australia: translating business requirements into architecture, then building, deploying and operating it across Vue, NestJS, GCP and data pipelines on BigQuery, Snowflake and Databricks. Teaching taught me to explain the same system to an engineer and to a venue manager.",
 ] as const;
 
-/** Hero footer strip. Three orienting facts, all CV-backed. */
+/** Hero ledger: the engagement in four facts. */
 export const nowStrip = [
-  {
-    label: "Now",
-    value: "GCP infrastructure & CVE hardening at HeyRCG!",
-  },
-  {
-    label: "Also",
-    value: "Co-Founder & CTO, AI WorkLabs",
-  },
-  {
-    label: "Before",
-    value: "4 years on AIA Singapore's PayEZ gateway",
-  },
+  { label: "Embedded at", value: "HeyRCG!, Australia · Remote, since Mar 2026" },
+  { label: "Running", value: "A 4-service platform for multi-venue hospitality" },
+  { label: "Also", value: "Co-Founder & CTO, AI WorkLabs" },
+  { label: "Based", value: "Bali, Indonesia" },
 ] as const;
 
-/** Headline numbers. Every one traces back to a line in the CV. */
-export const metrics = [
+/** How an engagement runs. Each step restates work already described in caseStudies / roles. */
+export const engagement = [
   {
-    value: "weeks → hours",
-    label: "Datamart processing cycle",
-    detail: "PL/SQL stored procedures rebuilt on Azure Databricks with PySpark",
+    step: "Problem",
+    title: "Start from the business requirement",
+    body: "Translate what the client needs into the best-fit architecture, and sequence delivery against their long-term goals rather than the next ticket.",
   },
   {
-    value: "4 yrs",
-    label: "Owning a payment gateway",
-    detail: "PayEZ at AIA Singapore — features, security, systems analysis",
+    step: "Embedded",
+    title: "Work inside the client's constraints",
+    body: "Production apps on Vue 3, NestJS, Express and Prisma, alongside the client's security, governance and stakeholder reality.",
   },
   {
-    value: "2",
-    label: "Bank rails integrated",
-    detail: "UOB TMRW and OCBC payment methods shipped inside PayEZ",
+    step: "Shipped",
+    title: "Own it in production",
+    body: "Cloud Run, managed Postgres and CI/CD on GCP, with CVE tracking, dependency audits and automated SAST/DAST in the pipeline.",
   },
   {
-    value: "3",
-    label: "Pen-test partners cleared",
-    detail: "EY, Black Duck and Accenture enhancement cycles",
-  },
-] as const;
-
-export const pillars = [
-  {
-    icon: "gauge",
-    title: "Performance first",
-    body: "Rebuilt a batch data platform on Azure Databricks and PySpark, cutting processing cycles from weeks to hours and reducing operational cost.",
-    tone: "emerald",
-  },
-  {
-    icon: "shield",
-    title: "Security-first mindset",
-    body: "Three major enhancement cycles under penetration testing by EY, Black Duck and Accenture, with Snyk, Veracode and CVE tracking in the loop.",
-    tone: "sky",
-  },
-  {
-    icon: "users",
-    title: "Teaching as leverage",
-    body: "Former Assistant Professor and programming instructor. Mentoring engineers and explaining architecture to non-technical stakeholders is the day job, not a side effect.",
-    tone: "emerald",
+    step: "Measured",
+    title: "Report in the client's terms",
+    body: "Analytics over Snowflake and BigQuery: repeat-visit rates, cross-venue visitation and discovery-source attribution on the dashboards clients read.",
   },
 ] as const;
 
 export type CaseStudy = {
-  org: string;
+  client: string;
   title: string;
-  kind: string;
   period: string;
-  icon: "code" | "database" | "cloud" | "wifi";
-  tone: "emerald" | "sky";
-  challenge: string;
-  approach: string;
-  impact: string;
+  problem: string;
+  deployed: string;
+  outcome: string;
   tech: readonly string[];
 };
 
 export const caseStudies: readonly CaseStudy[] = [
   {
-    org: "HeyRCG!",
-    title: "GCP platform for tmrwlabs.io & Dairy Farmers PNS",
-    kind: "Cloud architecture · Current",
+    client: "TMRW LABS",
+    title: "WiFi onboarding and customer intelligence for multi-venue hospitality",
     period: "2026 — Present",
-    icon: "cloud",
-    tone: "emerald",
-    challenge:
-      "Two production systems — tmrwlabs.io and the Australian Dairy Farmers Corporation PNS System — needed infrastructure that could scale without a platform team behind it.",
-    approach:
-      "Architected and scaled the cloud infrastructure on Google Cloud Platform, then hardened it by actively monitoring and resolving vulnerabilities through CVE tracking.",
-    impact:
-      "Both platforms run on infrastructure I designed, with security posture maintained as an ongoing practice rather than a release-gate scramble.",
-    tech: ["Google Cloud Platform", "Docker", "CVE tracking", "NestJS"],
+    problem:
+      "Hospitality venues put guests on WiFi but could not see who comes back, who visits more than one venue, or where guests discovered them.",
+    deployed:
+      "A four-service distributed system: API, dashboard, cron scheduler and queue consumer. Vue 3, NestJS, Express and Prisma, with the captive-portal onboarding flow at the edge.",
+    outcome:
+      "In production. Client dashboards report repeat-visit rates, cross-venue visitation and discovery-source attribution from Snowflake and BigQuery pipelines.",
+    tech: ["Vue 3", "NestJS", "Express", "Prisma", "Snowflake", "BigQuery"],
   },
   {
-    org: "TMRW LABS",
-    title: "Secure WiFi captive portal",
-    kind: "Full-stack product",
-    period: "2026",
-    icon: "wifi",
-    tone: "sky",
-    challenge:
-      "A guest WiFi portal sits directly in the trust boundary — it has to be fast, and it has to be safe.",
-    approach:
-      "Designed, built and maintained the portal end to end on Vue.js and NestJS, with security treated as a first-class requirement.",
-    impact:
-      "A secure, high-performing WiFi portal in production for TMRW LABS.",
-    tech: ["Vue.js", "NestJS", "TypeScript"],
+    client: "Australian Dairy Farmers Corporation",
+    title: "PNS System and PNS Estimator",
+    period: "2026 — Present",
+    problem:
+      "A production system for an Australian industry body needed infrastructure that could scale and stay secure without a platform team behind it.",
+    deployed:
+      "Architected and scaled the GCP footprint: Cloud Run, managed Postgres and CI/CD, with continuous CVE tracking, dependency auditing and SAST/DAST in the pipeline.",
+    outcome:
+      "The PNS System runs on infrastructure I designed, with security maintained as a continuous practice instead of a release-gate scramble.",
+    tech: ["GCP", "Cloud Run", "Postgres", "CI/CD", "SAST / DAST"],
   },
   {
-    org: "AIA Singapore",
-    title: "PayEZ re-platform: AEM → Next.js",
-    kind: "Fintech migration",
+    client: "Customer Zero",
+    title: "Customer Zero Framework & Applied AI | IKMJ",
+    period: "2026 — Present",
+    problem:
+      "Customer Zero needed a management dashboard and a platform to run it on, shaped around how the client actually works.",
+    deployed:
+      "The Customer Zero management dashboard on Vue 3, NestJS, Express and Prisma, with GCP infrastructure and CI/CD architected and scaled alongside it.",
+    outcome:
+      "Dashboard and infrastructure in production on the same GCP foundation as the other HeyRCG! systems.",
+    tech: ["Vue 3", "NestJS", "Prisma", "GCP", "CI/CD"],
+  },
+  {
+    client: "AIA Singapore",
+    title: "PayEZ payment gateway: Java to Next.js, then end-to-end ownership",
     period: "2021 — 2026",
-    icon: "code",
-    tone: "emerald",
-    challenge:
-      "PayEZ, AIA's payment gateway, was built on legacy AEM and Java — slow to change and hard to keep consistent across surfaces.",
-    approach:
-      "Migrated the gateway to Next.js and built out a documented Storybook component library, then led the frontend for the PayEZ Elevate Project and redesigned the UI to AIA's Digital Design Standard.",
-    impact:
-      "A maintainable, performant gateway carrying UOB TMRW and OCBC payment methods, integrated into AIA+ Singapore, with Adobe Analytics tagging and an in-product feedback review system.",
-    tech: [
-      "Next.js",
-      "React",
-      "Storybook",
-      "Adobe Analytics",
-      "Digital Design Standard",
-    ],
+    problem:
+      "AIA's PayEZ gateway ran on Java, slow to change and inconsistent across surfaces, while sitting under repeated penetration testing and compliance scrutiny.",
+    deployed:
+      "Migrated PayEZ from Java to Next.js with a Storybook component library, then led frontend for PayEZ Elevate and a UI/UX redesign to the Digital Design Standard. Integrated UOB TMRW and OCBC payments and PayEZ inside the AIA+ Singapore app.",
+    outcome:
+      "Remediated three pen-test cycles (EY, Accenture, Black Duck). UOB TMRW and OCBC rails live. Adobe Analytics and a feedback system wired in.",
+    tech: ["Next.js", "Storybook", "Adobe Analytics", "Chainlit"],
   },
   {
-    org: "AIA Singapore",
+    client: "AIA Singapore",
     title: "Datamart migration to Azure Databricks",
-    kind: "Data engineering",
     period: "2021 — 2022",
-    icon: "database",
-    tone: "sky",
-    challenge:
-      "PL/SQL stored procedures were grinding through the Datamart over a window measured in weeks.",
-    approach:
-      "Converted the procedures to Azure Databricks using SparkSQL and PySpark, built the ingestion pipelines in Azure Data Factory, and translated Autosys job definitions into new JIL scripts.",
-    impact:
-      "Processing cycles dropped from weeks to hours, with a matching cut in operational cost.",
-    tech: [
-      "Azure Databricks",
-      "PySpark",
-      "SparkSQL",
-      "Azure Data Factory",
-      "Autosys / JIL",
-    ],
+    problem:
+      "PL/SQL stored procedures ground through the Datamart on a cycle measured in weeks.",
+    deployed:
+      "Rewrote them as SparkSQL and PySpark on Azure Databricks, built the Azure Data Factory pipelines, and converted Autosys jobs to JIL scripts.",
+    outcome: "Processing went from weeks to hours.",
+    tech: ["Azure Databricks", "PySpark", "SparkSQL", "Azure Data Factory", "Autosys / JIL"],
   },
 ] as const;
 
 export const stackGroups = [
   {
-    title: "Front-End",
-    icon: "code",
-    tone: "emerald",
-    items: [
-      { name: "Next.js", current: true },
-      { name: "React", current: true },
-      { name: "Vue.js", current: true },
-      { name: "TypeScript", current: true },
-      { name: "Tailwind CSS", current: false },
-      { name: "Storybook", current: false },
-      { name: "React Native", current: false },
-      { name: "Phaser3", current: false },
-    ],
+    title: "Client surfaces",
+    items: ["Vue 3", "Next.js", "React", "TypeScript", "Tailwind CSS", "Storybook", "React Native"],
   },
   {
-    title: "Back-End",
-    icon: "terminal",
-    tone: "sky",
-    items: [
-      { name: "Node.js", current: true },
-      { name: "NestJS", current: true },
-      { name: "Python", current: true },
-      { name: "Flask", current: false },
-      { name: "Laravel", current: false },
-    ],
+    title: "Services",
+    items: ["NestJS", "Express", "Node.js", "Prisma", "Python", "Chainlit"],
   },
   {
-    title: "Data & Cloud",
-    icon: "database",
-    tone: "emerald",
-    items: [
-      { name: "Google Cloud Platform", current: true },
-      { name: "Azure Databricks", current: false },
-      { name: "PySpark", current: false },
-      { name: "SparkSQL", current: false },
-      { name: "Azure Data Factory", current: false },
-      { name: "Autosys / JIL", current: false },
-    ],
+    title: "Data pipelines",
+    items: ["BigQuery", "Snowflake", "Azure Databricks", "PySpark", "SparkSQL", "Azure Data Factory"],
   },
   {
-    title: "Security & DevOps",
-    icon: "shield",
-    tone: "sky",
-    items: [
-      { name: "CVE tracking", current: true },
-      { name: "Snyk", current: false },
-      { name: "Veracode", current: false },
-      { name: "Black Duck", current: false },
-      { name: "Docker", current: true },
-      { name: "Git", current: true },
-    ],
+    title: "Platform and security",
+    items: ["Google Cloud Platform", "Cloud Run", "Managed Postgres", "CI/CD", "SAST / DAST", "CVE tracking", "Docker", "Snyk", "Veracode"],
   },
   {
-    title: "AI Tooling",
-    icon: "sparkles",
-    tone: "emerald",
-    items: [
-      { name: "Claude Code", current: true },
-      { name: "OpenAI Codex", current: true },
-      { name: "Chainlit", current: false },
-      { name: "TensorFlow", current: false },
-      { name: "Keras", current: false },
-      { name: "SciKit-Learn", current: false },
-      { name: "NLTK", current: false },
-      { name: "EasyOCR", current: false },
-    ],
-  },
-  {
-    title: "Analytics",
-    icon: "chart",
-    tone: "sky",
-    items: [
-      { name: "Adobe Analytics", current: false },
-      { name: "Digital Design Standard", current: false },
-    ],
+    title: "Applied AI",
+    items: ["Claude Code", "OpenAI Codex", "Keras", "TensorFlow", "scikit-learn", "NLTK", "EasyOCR"],
   },
 ] as const;
 
 export type Role = {
   company: string;
   title: string;
+  type: string;
   period: string;
   location: string;
   current: boolean;
@@ -270,84 +168,89 @@ export type Role = {
 export const roles: readonly Role[] = [
   {
     company: "HeyRCG!",
-    title: "Full Stack Engineer",
+    title: "Forward Deployed Engineer",
+    type: "Full-time",
     period: "Mar 2026 — Present",
-    location: "Australia",
+    location: "Australia · Remote",
     current: true,
     points: [
-      "Architected and scaled cloud infrastructure on Google Cloud Platform for tmrwlabs.io and the Australian Dairy Farmers Corporation PNS System.",
-      "Hardened infrastructure by actively monitoring and resolving vulnerabilities via CVE tracking.",
-      "Acted as strategic technical advisor, evaluating system requirements to design best-fit architecture aligned with long-term business goals.",
-      "Built and maintained full-stack applications on Vue.js and NestJS, including a secure WiFi Portal for TMRW LABS.",
+      "Built and operate a 4-service distributed system (API, dashboard, cron scheduler, queue consumer) for WiFi captive-portal onboarding and customer analytics across multi-venue hospitality networks.",
+      "Vue 3, NestJS, Express and Prisma across production apps, including the TMRW LABS WiFi Portal and the Customer Zero management dashboard.",
+      "Architected and scaled GCP infrastructure (Cloud Run, managed Postgres, CI/CD) for tmrwlabs.io, the Australian Dairy Farmers Corporation PNS System and Customer Zero.",
+      "Analytics pipelines over Snowflake and BigQuery powering repeat-visit rates, cross-venue visitation and discovery-source attribution for client dashboards.",
+      "Continuous CVE tracking and remediation, dependency auditing, and automated SAST/DAST in CI.",
+      "Translate business requirements into best-fit architecture and sequence delivery against long-term goals.",
     ],
   },
   {
     company: "AI WorkLabs",
     title: "Co-Founder & CTO",
+    type: "Part-time",
     period: "Jan 2025 — Present",
     location: "Indonesia",
     current: true,
     points: [
-      "Lead technology strategy, product development and IT operations.",
-      "Manage client technical requirements, keeping solutions aligned to business goals.",
-      "Oversee all technical aspects from architecture through deployment.",
-      "Lead and mentor the engineering team, fostering innovation and collaboration.",
-    ],
-  },
-  {
-    company: "AIA",
-    title: "Engineer/Analyst Fullstack ReactJS",
-    period: "Apr 2022 — Feb 2026",
-    location: "Singapore",
-    current: false,
-    points: [
-      "Owned the PayEZ payment gateway: new features, enhancements, bug fixing, security improvements and systems analysis.",
-      "Directed the PayEZ UI/UX redesign against the Digital Design Standard, and led frontend for the PayEZ Elevate Project.",
-      "Improved performance and security through penetration testing cycles with EY, Black Duck and Accenture.",
-      "Integrated UOB TMRW and OCBC payment methods, plus PayEZ support inside the AIA+ Singapore apps.",
-      "Shipped a feedback review system, Adobe Analytics tagging, and a ChatGPT-like internal AI tool built on Chainlit.",
-      "Handled the business-facing surface: User Business, Internal Security, Enterprise Governance, Risk and Compliance.",
+      "AI agent products that automate team alerts and predict customer churn risk.",
+      "Took the architecture from prototype to production; build and mentor the team.",
+      "Scope AI solutions to each client's goals.",
     ],
   },
   {
     company: "PT. Timedoor Indonesia",
     title: "Programming Teacher",
-    period: "Jul 2021 — Mar 2023",
-    location: "Bali, Indonesia",
+    type: "Freelance",
+    period: "Jul 2021 — Present",
+    location: "Bali",
+    current: true,
+    points: [
+      "JavaScript and Phaser3 game development, a pro full-stack course, web development and React Native.",
+      "Introductory AI with Keras, NLTK, TensorFlow, scikit-learn and EasyOCR.",
+    ],
+  },
+  {
+    company: "AIA Singapore",
+    title: "Full-Stack Engineer (Lead, PayEZ)",
+    type: "Full-time",
+    period: "Apr 2022 — Feb 2026",
+    location: "Hybrid",
     current: false,
     points: [
-      "Taught intermediate Vanilla JavaScript and Phaser3 game development.",
-      "Ran the pro-level full-stack course covering frontend, backend and database across the end-to-end app flow.",
-      "Delivered React Native mobile training and web development in HTML, CSS and JavaScript.",
-      "Introduced AI foundations with Keras, NLTK, TensorFlow, SciKit-Learn and EasyOCR.",
+      "Owned the PayEZ payment gateway end to end.",
+      "Led frontend for PayEZ Elevate and a DDS-compliant UI/UX redesign.",
+      "Integrated UOB TMRW and OCBC payments, and PayEZ into the AIA+ Singapore app.",
+      "Remediated three pen-test cycles (EY, Accenture, Black Duck).",
+      "Built an internal ChatGPT-style assistant with Chainlit, Adobe Analytics and a feedback system; healthcare UI/UX and HumanableCX welcome pages.",
+      "Owned business, security and GRC alignment.",
     ],
   },
   {
     company: "AIA Singapore",
     title: "Data Engineer",
+    type: "Contract",
     period: "May 2021 — Apr 2022",
     location: "Singapore",
     current: false,
     points: [
-      "Migrated the Datamart to Azure Databricks, optimizing storage and processing.",
-      "Converted PL/SQL stored procedures to Databricks using SparkSQL and PySpark.",
-      "Built data pipelines in Azure Data Factory and transformed Autosys job definitions into JIL scripts.",
-      "Migrated the PayEZ payment gateway from Java to Next.js and documented components in Storybook.",
+      "Migrated PL/SQL to SparkSQL and PySpark on Azure Databricks (Datamart migration, weeks to hours).",
+      "Azure Data Factory pipelines; Autosys converted to JIL scripts.",
+      "Migrated PayEZ from Java to Next.js; Storybook components.",
     ],
   },
   {
     company: "Yayasan Perguruan Sutomo",
     title: "Computer Teacher",
+    type: "",
     period: "Jul 2018 — Jun 2021",
-    location: "Medan, Indonesia",
+    location: "Medan",
     current: false,
     points: [],
   },
   {
     company: "Universitas Mikroskil",
     title: "Assistant Professor",
+    type: "Part-time",
     period: "Jul 2018 — May 2021",
-    location: "Medan, Indonesia",
+    location: "Medan",
     current: false,
     points: [],
   },
@@ -383,96 +286,9 @@ export const languages = [
 ] as const;
 
 export const navItems = [
-  { href: "#about", label: "About" },
+  { href: "#how", label: "Method" },
   { href: "#work", label: "Work" },
   { href: "#stack", label: "Stack" },
-  { href: "#journey", label: "Journey" },
+  { href: "#journey", label: "Career" },
   { href: "#contact", label: "Contact" },
 ] as const;
-
-/**
- * Stage-by-stage flow behind each case study, used to draw its system diagram.
- * Every stage label restates something already claimed in `caseStudies` above —
- * these are a visual index of the prose, never a new claim.
- *
- * `lines` is pre-wrapped because the diagram renders SVG text, which has no
- * automatic wrapping.
- */
-export type SystemFlow = {
-  /** Lowercase strip under the diagram. */
-  caption: string;
-  stages: readonly {
-    lines: readonly string[];
-    /** `accent` marks the stage that did the work. */
-    accent?: boolean;
-  }[];
-};
-
-export const systemFlows: Record<CaseStudy["icon"], SystemFlow> = {
-  code: {
-    caption: "legacy → re-platform",
-    stages: [
-      { lines: ["Legacy AEM", "Java gateway"] },
-      { lines: ["Next.js +", "Storybook"], accent: true },
-      { lines: ["UOB TMRW /", "OCBC rails"] },
-    ],
-  },
-  database: {
-    caption: "batch pipeline",
-    stages: [
-      { lines: ["PL/SQL stored", "procedures"] },
-      { lines: ["Azure Databricks", "PySpark"], accent: true },
-      { lines: ["Hours,", "not weeks"] },
-    ],
-  },
-  cloud: {
-    caption: "systems → platform",
-    stages: [
-      { lines: ["Product", "systems"] },
-      { lines: ["GCP", "infrastructure"], accent: true },
-      { lines: ["Monitored", "security posture"] },
-    ],
-  },
-  wifi: {
-    caption: "edge → secure portal",
-    stages: [
-      { lines: ["User /", "device"] },
-      { lines: ["Vue + NestJS", "captive portal"], accent: true },
-      { lines: ["Authenticated", "network"] },
-    ],
-  },
-};
-
-/**
- * Capability constellation. Positions are fixed in a 520×320 viewBox and the
- * adjacency is symmetric — hovering a domain emphasises the domains it actually
- * shares work with (front-end feeds analytics tagging, data feeds AI tooling,
- * and so on).
- *
- * Keyed by `stackGroups[].title`, so the groups themselves stay untouched.
- */
-export const domainNodes: Record<
-  string,
-  { x: number; y: number; short: string }
-> = {
-  "Front-End": { x: 110, y: 58, short: "FE" },
-  "Back-End": { x: 255, y: 128, short: "BE" },
-  "Data & Cloud": { x: 400, y: 62, short: "Data" },
-  "Security & DevOps": { x: 410, y: 208, short: "Sec" },
-  "AI Tooling": { x: 185, y: 216, short: "AI" },
-  Analytics: { x: 62, y: 148, short: "Anl" },
-};
-
-export const domainLinks: Record<string, readonly string[]> = {
-  "Front-End": ["Back-End", "Analytics"],
-  "Back-End": ["Front-End", "Data & Cloud", "Security & DevOps", "AI Tooling"],
-  "Data & Cloud": [
-    "Back-End",
-    "Security & DevOps",
-    "AI Tooling",
-    "Analytics",
-  ],
-  "Security & DevOps": ["Back-End", "Data & Cloud"],
-  "AI Tooling": ["Back-End", "Data & Cloud"],
-  Analytics: ["Front-End", "Data & Cloud"],
-};

@@ -24,31 +24,28 @@ export function ContactCard() {
   };
 
   return (
-    <div className="mt-10 grid gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
+    <div className="mt-10 grid gap-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
       <div>
-        <p className="font-mono text-xs uppercase tracking-[0.14em] text-subtle">
+        <p className="font-mono text-xs text-[#B9B2A2]">
           Email
         </p>
         <div className="mt-2 flex flex-wrap items-center gap-3">
-          {/* The page's one `ember` use: the final call-to-action, so the
-              warm accent keeps its meaning (REDESIGN.md §1) instead of
-              blending into the mint/signal system used everywhere else. */}
-          <a
+                    <a
             href={`mailto:${person.email}`}
-            className="text-balance text-lg font-medium text-paper underline decoration-ember/50 decoration-2 underline-offset-[6px] transition-colors hover:decoration-ember sm:text-2xl"
+            className="break-all font-display text-xl text-paper underline decoration-flare-bright decoration-2 transition-colors hover:text-flare-bright sm:break-normal sm:text-4xl"
           >
             {person.email}
           </a>
           <button
             type="button"
             onClick={copyEmail}
-            className="inline-flex items-center gap-1.5 rounded-md border border-ink-line px-2.5 py-1.5 font-mono text-[0.7rem] text-muted transition-colors hover:border-mint/40 hover:text-paper"
+            className="inline-flex items-center gap-1.5 border border-paper/60 px-2.5 py-1.5 font-mono text-xs text-paper transition-colors hover:bg-paper hover:text-ink"
           >
             {copied ? (
               <>
                 <Icon
                   icon="solar:check-circle-linear"
-                  className="h-3.5 w-3.5 text-mint"
+                  className="h-3.5 w-3.5"
                   aria-hidden="true"
                 />
                 Copied
@@ -73,7 +70,7 @@ export function ContactCard() {
             href={person.linkedin}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-md border border-ink-line bg-white/[0.02] px-4 py-2.5 text-sm text-paper transition-colors hover:border-mint/40 hover:bg-mint/[0.06]"
+            className="inline-flex items-center gap-2 border border-paper/60 px-4 py-2.5 text-sm font-semibold text-paper transition-colors hover:bg-paper hover:text-ink"
           >
             <Icon icon="solar:case-round-linear" className="h-4 w-4" aria-hidden="true" />
             LinkedIn
@@ -84,7 +81,7 @@ export function ContactCard() {
             href={person.github}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-md border border-ink-line bg-white/[0.02] px-4 py-2.5 text-sm text-paper transition-colors hover:border-mint/40 hover:bg-mint/[0.06]"
+            className="inline-flex items-center gap-2 border border-paper/60 px-4 py-2.5 text-sm font-semibold text-paper transition-colors hover:bg-paper hover:text-ink"
           >
             <Icon icon="solar:code-square-linear" className="h-4 w-4" aria-hidden="true" />
             GitHub
@@ -95,7 +92,7 @@ export function ContactCard() {
             href={person.resume}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-md bg-mint px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-mint-soft"
+            className="inline-flex items-center gap-2 bg-paper px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-flare-bright"
           >
             <Icon icon="solar:download-linear" className="h-4 w-4" aria-hidden="true" />
             Résumé (PDF)
@@ -135,7 +132,7 @@ export function SocialRow() {
             {...(external
               ? { target: "_blank", rel: "noopener noreferrer" }
               : {})}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-ink-line/70 text-muted transition-colors hover:border-mint/40 hover:text-mint"
+            className="inline-flex h-9 w-9 items-center justify-center border border-paper/60 text-paper transition-colors hover:bg-paper hover:text-ink"
           >
             {/* Icon-only links previously had no accessible name at all. */}
             <span className="sr-only">{label}</span>

@@ -1,78 +1,39 @@
-import { Icon } from "@/lib/icons";
-import { Reveal } from "@/components/reveal";
 import { certifications, education, languages } from "@/lib/content";
 
 export function Credibility() {
   return (
-    <div className="mt-12 grid gap-4 lg:grid-cols-3">
-      <Reveal className="rounded-xl border border-ink-line/80 bg-ink-raised/50 p-6">
-        <h3 className="flex items-center gap-2.5 font-mono text-xs uppercase tracking-[0.14em] text-paper">
-          <Icon icon="solar:square-academic-cap-linear" className="h-4 w-4 text-mint" aria-hidden="true" />
-          Education
-        </h3>
-        <ul className="mt-5 space-y-5">
+    <div className="mt-6 grid gap-10 lg:grid-cols-3">
+      <div>
+        <h3 className="font-display text-xl text-ink">Education</h3>
+        <ul className="mt-4 space-y-4">
           {education.map((item) => (
             <li key={item.school}>
-              <p className="text-[0.95rem] font-medium text-paper">
-                {item.school}
-              </p>
-              <p className="mt-0.5 text-sm text-muted">{item.credential}</p>
-              {/* Tertiary line — a date, not a claim — so it sits one step
-                  dimmer than `subtle` (REDESIGN.md §1's `--paper-dim`). */}
-              <p className="mt-1 font-mono text-xs text-paper-dim">
-                {item.period}
-              </p>
+              <p className="font-medium text-ink">{item.school}</p>
+              <p className="text-sm">{item.credential}</p>
+              <p className="font-mono text-xs text-mute tabular">{item.period}</p>
             </li>
           ))}
         </ul>
-      </Reveal>
-
-      <Reveal
-        delay={0.06}
-        className="rounded-xl border border-ink-line/80 bg-ink-raised/50 p-6"
-      >
-        <h3 className="flex items-center gap-2.5 font-mono text-xs uppercase tracking-[0.14em] text-paper">
-          <Icon icon="solar:medal-ribbon-linear" className="h-4 w-4 text-signal" aria-hidden="true" />
-          Certifications
-        </h3>
-        <ul className="mt-5 space-y-3">
+      </div>
+      <div>
+        <h3 className="font-display text-xl text-ink">Certifications</h3>
+        <ul className="mt-4 space-y-2 text-sm">
           {certifications.map((cert) => (
-            <li
-              key={cert}
-              className="relative pl-4 text-sm leading-relaxed text-muted"
-            >
-              <span
-                aria-hidden="true"
-                className="absolute left-0 top-[0.5rem] h-1 w-1 rounded-full bg-signal"
-              />
-              {cert}
-            </li>
+            <li key={cert}>{cert}</li>
           ))}
         </ul>
-      </Reveal>
-
-      <Reveal
-        delay={0.12}
-        className="rounded-xl border border-ink-line/80 bg-ink-raised/50 p-6"
-      >
-        <h3 className="flex items-center gap-2.5 font-mono text-xs uppercase tracking-[0.14em] text-paper">
-          <Icon icon="solar:global-linear" className="h-4 w-4 text-mint" aria-hidden="true" />
-          Languages
-        </h3>
-        <dl className="mt-5 space-y-3">
-          {languages.map((language) => (
-            <div
-              key={language.name}
-              className="flex items-baseline justify-between gap-4 border-b border-ink-line/50 pb-2.5 last:border-0 last:pb-0"
-            >
-              <dt className="text-sm text-paper">{language.name}</dt>
-              <dd className="font-mono text-xs text-subtle">
-                {language.level}
-              </dd>
+      </div>
+      <div>
+        <h3 className="font-display text-xl text-ink">Languages</h3>
+        <dl className="mt-4 space-y-2 text-sm">
+          {languages.map((l) => (
+            <div key={l.name} className="flex justify-between gap-4 border-b border-line pb-2 last:border-0">
+              <dt className="text-ink">{l.name}</dt>
+              <dd className="text-mute">{l.level}</dd>
             </div>
           ))}
         </dl>
-      </Reveal>
+      </div>
     </div>
   );
 }

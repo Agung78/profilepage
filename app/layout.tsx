@@ -1,6 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Fraunces, Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
 import { SmoothScroll } from "@/components/smooth-scroll";
 import {
@@ -11,37 +11,45 @@ import {
   stackGroups,
 } from "@/lib/content";
 
-const inter = Inter({
+const display = Fraunces({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-display",
+  display: "swap",
+  axes: ["opsz"],
+});
+
+const sans = Hanken_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-sans",
   display: "swap",
 });
 
-const jetbrainsMono = JetBrains_Mono({
+const mono = JetBrains_Mono({
   subsets: ["latin"],
-  variable: "--font-jetbrains-mono",
+  variable: "--font-mono",
   display: "swap",
-  /* Never used above the fold in size that matters for LCP — don't let its
-     preload compete for bandwidth with the CSS on the critical path. */
   preload: false,
 });
 
 const DESCRIPTION =
-  "Engineer building product UX, cloud infrastructure, fintech and data platforms. Full Stack Engineer at HeyRCG, Co-Founder & CTO at AI WorkLabs.";
+  "Forward Deployed Engineer embedded with clients at HeyRCG!: Vue, NestJS, Next.js, GCP and data pipelines on BigQuery, Snowflake and Databricks. Co-Founder & CTO at AI WorkLabs. Based in Bali, Indonesia.";
 
 export const metadata: Metadata = {
   /* Without metadataBase, Next resolves social image and canonical URLs
      against http://localhost:3000 at build time. */
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${person.name} — Full-Stack & Platform Engineer`,
+    default: `${person.name} — Forward Deployed Engineer`,
     template: `%s | ${person.name}`,
   },
   description: DESCRIPTION,
   applicationName: `${person.name} — Portfolio`,
   keywords: [
-    "Full-Stack Engineer",
+    "Forward Deployed Engineer",
+    "Solutions Engineer",
     "Platform Engineer",
+    "BigQuery",
+    "Snowflake",
     "Next.js",
     "NestJS",
     "Vue.js",
@@ -62,13 +70,13 @@ export const metadata: Metadata = {
     type: "profile",
     locale: "en_US",
     url: SITE_URL,
-    title: `${person.name} — Full-Stack & Platform Engineer`,
+    title: `${person.name} — Forward Deployed Engineer`,
     description: DESCRIPTION,
     siteName: `${person.name} — Portfolio`,
   },
   twitter: {
     card: "summary_large_image",
-    title: `${person.name} — Full-Stack & Platform Engineer`,
+    title: `${person.name} — Forward Deployed Engineer`,
     description: DESCRIPTION,
   },
   robots: {
@@ -85,7 +93,7 @@ export const metadata: Metadata = {
   icons: { icon: "/favicon.ico", apple: "/apple-icon" },
 };
 
-/** Person schema, kept in sync with the CV rather than the old CTO-only claim. */
+/** Person schema, kept in sync with the CV. */
 const personSchema = {
   "@context": "https://schema.org",
   "@type": "Person",
@@ -112,7 +120,7 @@ const personSchema = {
     name,
   })),
   knowsAbout: Array.from(
-    new Set(stackGroups.flatMap((group) => group.items.map((i) => i.name)))
+    new Set(stackGroups.flatMap((group) => group.items))
   ),
   sameAs: [person.linkedin, person.github],
 };
@@ -127,7 +135,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${jetbrainsMono.variable}`}
+      className={`${display.variable} ${sans.variable} ${mono.variable}`}
     >
       {/* No `scroll-smooth` class: Lenis owns smooth scrolling when it is
           instantiated, and fighting it with the native CSS behaviour causes
@@ -147,7 +155,7 @@ export default function RootLayout({
       <body className="antialiased">
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-md focus:bg-mint focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-ink"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:bg-ink focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-paper"
         >
           Skip to content
         </a>
