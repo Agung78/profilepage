@@ -100,4 +100,6 @@
 .splash-tile { animation: splash-tile 1.5s both }
 .splash-a { stroke-dasharray: 1; animation: splash-draw 1.5s both }
 .splash-bar { transform-box: fill-box; transform-origin: left center; animation: splash-bar 1.5s both }
+.splash, .splash * { animation-play-state: paused }
+.splash[data-play], .splash[data-play] * { animation-play-state: running }
 html[data-splash="skip"] .splash { display: none }

@@ -7,17 +7,25 @@ import { useEffect, useState } from "react";
  * layout.tsx (sets html[data-splash=skip]). Page content renders underneath. */
 export function Splash() {
   const [gone, setGone] = useState(false);
+  const [play, setPlay] = useState(false);
 
-  // Fallback if animationend never fires (e.g. animations disabled).
+  // Start the clock after hydration: stroke-dashoffset and SVG-child transforms
+  // run on the main thread, so animating during hydration stutters.
+  // Fallback timer covers animationend never firing (e.g. animations disabled).
   useEffect(() => {
-    const t = setTimeout(() => setGone(true), 1600);
-    return () => clearTimeout(t);
+    let t: ReturnType<typeof setTimeout>;
+    const r = requestAnimationFrame(() => {
+      setPlay(true);
+      t = setTimeout(() => setGone(true), 1600);
+    });
+    return () => { cancelAnimationFrame(r); clearTimeout(t); };
   }, []);
 
   if (gone) return null;
   return (
     <div
       aria-hidden="true"
+      data-play={play || undefined}
       onAnimationEnd={(e) => e.target === e.currentTarget && setGone(true)}
       className="splash pointer-events-none fixed inset-0 z-[100] flex items-center justify-center bg-paper"
     >
