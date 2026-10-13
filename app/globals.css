@@ -10,6 +10,11 @@
     scrollbar-width: thin;
   }
 
+  /* Native smooth anchors for touch (no Lenis); Lenis adds .lenis to html. */
+  html:not(.lenis) {
+    scroll-behavior: smooth;
+  }
+
   body {
     background-color: theme("colors.paper.DEFAULT");
     color: theme("colors.ink.soft");

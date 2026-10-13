@@ -50,7 +50,11 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
       import("lenis").then(({ default: LenisCtor }) => {
         if (cancelled) return;
-        const instance = new LenisCtor({ autoRaf: false, smoothWheel: true });
+        const instance = new LenisCtor({
+          autoRaf: false,
+          smoothWheel: true,
+          anchors: { offset: -80 },
+        });
         lenis = instance;
         window.__lenis = instance;
         instance.on("scroll", ScrollTrigger.update);
