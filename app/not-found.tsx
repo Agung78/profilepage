@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { Icon } from "@/lib/icons";
 
-export const metadata = { title: "Page not found" };
+export const metadata = {
+  title: "Page not found",
+  robots: { index: false, follow: false },
+  alternates: { canonical: null },
+};
 
 export default function NotFound() {
   return (

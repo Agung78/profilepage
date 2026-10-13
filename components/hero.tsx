@@ -33,6 +33,7 @@ export function Hero() {
       </p>
 
       <h1 className="mt-6 max-w-4xl font-display text-[clamp(2.5rem,8.2vw,6rem)] font-light leading-[1.02] tracking-[-0.03em] text-ink">
+        <span className="sr-only">{person.name}, {person.currentRole} — </span>
         <span className="block overflow-hidden pb-[0.08em]">
           <span data-line className="block">Forward deployed.</span>
         </span>

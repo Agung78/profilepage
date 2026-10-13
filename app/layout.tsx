@@ -32,7 +32,7 @@ const mono = JetBrains_Mono({
 });
 
 const DESCRIPTION =
-  "Forward Deployed Engineer embedded with clients at HeyRCG!: Vue, NestJS, Next.js, GCP and data pipelines on BigQuery, Snowflake and Databricks. Co-Founder & CTO at AI WorkLabs. Based in Bali, Indonesia.";
+  "Forward Deployed Engineer at HeyRCG!: Vue, NestJS, Next.js, GCP, BigQuery, Snowflake. Co-Founder & CTO at AI WorkLabs. Based in Bali, Indonesia.";
 
 export const metadata: Metadata = {
   /* Without metadataBase, Next resolves social image and canonical URLs
@@ -65,11 +65,11 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: person.name, url: person.linkedin }],
   creator: person.name,
-  alternates: { canonical: "/" },
+  alternates: { canonical: SITE_URL + "/" },
   openGraph: {
     type: "profile",
     locale: "en_US",
-    url: SITE_URL,
+    url: SITE_URL + "/",
     title: `${person.name} — Forward Deployed Engineer`,
     description: DESCRIPTION,
     siteName: `${person.name} — Portfolio`,
@@ -97,10 +97,12 @@ export const metadata: Metadata = {
 const personSchema = {
   "@context": "https://schema.org",
   "@type": "Person",
+  "@id": SITE_URL + "/#person",
   name: person.name,
   url: SITE_URL,
-  email: `mailto:${person.email}`,
-  jobTitle: [person.currentRole, person.concurrentRole],
+  mainEntityOfPage: { "@type": "ProfilePage", "@id": SITE_URL + "/" },
+  image: SITE_URL + "/opengraph-image",
+  jobTitle: person.currentRole,
   description: DESCRIPTION,
   address: {
     "@type": "PostalAddress",
