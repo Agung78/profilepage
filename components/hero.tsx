@@ -2,227 +2,82 @@
 
 import { useRef } from "react";
 import { Icon } from "@/lib/icons";
-import { CursorSpotlight } from "@/components/cursor-spotlight";
-import { Monogram } from "@/components/monogram";
-import { ScrollCue } from "@/components/scroll-cue";
-import { SplitHeading } from "@/components/split-heading";
 import { useMotionPrefs } from "@/hooks/use-motion-prefs";
-import {
-  EASE,
-  HERO_STEPS,
-  HERO_STEP_DURATION,
-  gsap,
-  useGSAP,
-} from "@/lib/motion";
-import { nowStrip, person } from "@/lib/content";
+import { EASE, gsap, useGSAP } from "@/lib/motion";
+import { nowStrip, person, summary } from "@/lib/content";
 
 /**
- * Hero, rebuilt typographic per REDESIGN.md §9 Q1's own stated fallback: no
- * photograph of the subject exists, so there is no portrait, no duotone
- * grade, and no Three.js displacement pass (§5 is dropped entirely rather
- * than faked). The name itself is the hero's one focal asset, held at full
- * bleed — the GSAP intro timeline from §3 still runs in full, minus the
- * shader/portrait steps.
+ * The page's one authored motion: headline lines rise out of a clip, then the
+ * ledger rows fade in. Everything is visible by default; JS only animates from
+ * the hidden state, and reduced motion skips it entirely.
  */
 export function Hero() {
-  const reduceMotion = useMotionPrefs();
-  const root = useRef<HTMLDivElement>(null);
+  const reduce = useMotionPrefs();
+  const root = useRef<HTMLElement>(null);
 
   useGSAP(
     () => {
-      if (reduceMotion || !root.current) return;
-
-      const nameWords = root.current.querySelectorAll("[data-hero-name] [data-split-word]");
-      const rise = root.current.querySelectorAll("[data-hero-rise]");
-      const strip = root.current.querySelectorAll("[data-hero-strip-item]");
-
-      /* Everything below is opacity/transform only — nav, headline and CTAs
-         stay usable and clickable at every point in the sequence, never
-         gated behind `visibility` or `pointer-events`. Total sequence lands
-         inside the ~1.4s window described in §3. */
-      const tl = gsap.timeline({ defaults: { ease: EASE } });
-
-      if (nameWords.length) {
-        tl.fromTo(
-          nameWords,
-          { yPercent: 110, opacity: 0 },
-          {
-            yPercent: 0,
-            opacity: 1,
-            duration: 0.9,
-            stagger: 0.08,
-          },
-          HERO_STEPS.name
-        );
-      }
-
-      rise.forEach((el) => {
-        const step = Number((el as HTMLElement).dataset.heroRise) || 0;
-        tl.fromTo(
-          el,
-          { opacity: 0, y: 16 },
-          { opacity: 1, y: 0, duration: HERO_STEP_DURATION },
-          step
-        );
-      });
-
-      if (strip.length) {
-        tl.fromTo(
-          strip,
-          { opacity: 0, y: 12 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.5,
-            stagger: 0.06,
-          },
-          HERO_STEPS.strip
-        );
-      }
-
-      return () => {
-        tl.kill();
-      };
+      if (reduce) return;
+      gsap
+        .timeline({ defaults: { ease: EASE } })
+        .from("[data-line]", { yPercent: 105, duration: 0.9, stagger: 0.12 })
+        .from("[data-fade]", { opacity: 0, y: 12, duration: 0.6, stagger: 0.08 }, "-=0.4");
     },
-    { scope: root, dependencies: [reduceMotion] }
+    { scope: root, dependencies: [reduce] }
   );
 
-  /* Under reduced motion, or before the effect above has run, every animated
-     element must already be in its resting (visible) state — never an
-     un-animated opacity:0. */
-  const restState = reduceMotion ? { opacity: 1 } : undefined;
-
   return (
-    <section
-      id="top"
-      ref={root}
-      className="relative flex min-h-[100svh] items-center overflow-hidden pt-24 pb-24 sm:pt-28"
-    >
-      {/* Desktop-only, fine-pointer-only. Renders null everywhere else. */}
-      <CursorSpotlight />
+    <section id="top" ref={root} className="mx-auto max-w-6xl px-5 pb-20 pt-32 sm:px-8 sm:pt-40">
+      <p data-fade className="font-mono text-xs text-mute">
+        {person.name} · {person.location}
+      </p>
 
-      <div className="relative mx-auto w-full max-w-6xl px-5 sm:px-8">
-        {/* <div
-          data-hero-rise={HERO_STEPS.nav}
-          style={restState}
-          className="flex items-center gap-3"
-        >
-          <Monogram size={52} className="shrink-0" />
-          <span className="inline-flex items-center gap-2 rounded-full border border-mint/25 bg-mint/[0.07] px-3 py-1.5 font-mono text-xs text-mint-soft">
-            <span className="relative flex h-1.5 w-1.5">
-              <span
-                className={`absolute inline-flex h-full w-full rounded-full bg-mint ${
-                  reduceMotion ? "" : "animate-breathe"
-                }`}
-              />
-            </span>
-            {person.availability}
+      <h1 className="mt-6 max-w-4xl font-display text-[clamp(2.5rem,8.2vw,6rem)] font-light leading-[1.02] tracking-[-0.03em] text-ink">
+        <span className="sr-only">{person.name}, {person.currentRole} — </span>
+        <span className="block overflow-hidden pb-[0.08em]">
+          <span data-line className="block">Forward deployed.</span>
+        </span>
+        <span className="block overflow-hidden pb-[0.08em]">
+          <span data-line className="block">
+            Shipped to <em className="text-flare">production</em>.
           </span>
-        </div> */}
+        </span>
+      </h1>
 
-        {/* Full-bleed typographic focal point — the hero's one authored
-            "asset" in place of the unavailable portrait (REDESIGN.md §9 Q1).
-            No entrance-triggered layout shift: the split wrapper reserves the
-            same box whether or not JS has run. */}
-        <div data-hero-name>
-          <SplitHeading
-            as="h1"
-            text={person.name}
-            className="mt-8 max-w-5xl text-balance text-[clamp(2.75rem,9.5vw,6.5rem)] font-semibold leading-[0.92] tracking-[-0.03em] text-paper"
-          />
-        </div>
-
-        <p
-          data-hero-rise={HERO_STEPS.headline}
-          style={restState}
-          className="mt-6 max-w-2xl text-pretty text-lg leading-relaxed text-muted sm:text-xl"
-        >
-          Full-stack engineer working across product UX, cloud infrastructure,
-          fintech and data platforms — currently{" "}
-          <strong className="font-medium text-paper">
-            {person.currentRole} at {person.currentCompany}
-          </strong>{" "}
-          and{" "}
-          <strong className="font-medium text-paper">
-            {person.concurrentRole} at {person.concurrentCompany}
-          </strong>
-          .
-        </p>
-
-        <dl
-          data-hero-rise={HERO_STEPS.meta}
-          style={restState}
-          className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 font-mono text-xs text-subtle"
-        >
-          <div className="flex items-center gap-2">
-            <dt className="sr-only">Based in</dt>
-            <Icon
-              icon="solar:map-point-linear"
-              className="h-3.5 w-3.5 text-mint"
-              aria-hidden="true"
-            />
-            <dd>{person.location}</dd>
-          </div>
-          <div className="flex items-center gap-2">
-            <dt className="sr-only">Working with</dt>
-            <span aria-hidden="true" className="text-ink-line">
-              /
-            </span>
-            <dd>{person.remoteFor}</dd>
-          </div>
-        </dl>
-
-        <div
-          data-hero-rise={HERO_STEPS.ctas}
-          style={restState}
-          className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center"
-        >
-          <a
-            href="#work"
-            className="group inline-flex items-center justify-center gap-2 rounded-md bg-mint px-6 py-3.5 text-sm font-semibold text-ink transition-[background-color,transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:bg-mint-soft hover:shadow-[0_10px_30px_-12px_rgba(61,220,151,0.55)]"
-          >
-            See selected systems
-            <Icon
-              icon="solar:arrow-down-linear"
-              className="h-4 w-4 transition-transform duration-300 group-hover:translate-y-0.5"
-              aria-hidden="true"
-            />
-          </a>
-          <a
-            href="#contact"
-            className="group inline-flex items-center justify-center gap-2 rounded-md border border-ink-line bg-white/[0.02] px-6 py-3.5 text-sm font-semibold text-paper transition-[background-color,border-color,transform] duration-300 hover:-translate-y-0.5 hover:border-mint/40 hover:bg-mint/[0.06]"
-          >
-            Start a conversation
-            <Icon
-              icon="solar:arrow-right-up-linear"
-              className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-              aria-hidden="true"
-            />
-          </a>
-        </div>
-
-        {/* Orienting strip: fills the lower third of the hero with substance
-            rather than empty space, and answers "what is he doing now?". */}
-        <dl className="mt-14 grid gap-px overflow-hidden rounded-xl border border-ink-line/70 bg-ink-line/40 sm:mt-20 sm:grid-cols-3">
-          {nowStrip.map((item) => (
-            <div
-              key={item.label}
-              data-hero-strip-item
-              style={restState}
-              className="group bg-ink/70 px-5 py-4 transition-colors duration-300 hover:bg-ink-raised/80"
+      <div className="mt-12 grid gap-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-20">
+        <div data-fade>
+          <p className="max-w-[34rem] text-pretty text-xl leading-snug text-ink">{summary[0]}</p>
+          <p className="mt-5 max-w-[34rem] text-pretty leading-relaxed">{summary[1]}</p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <a
+              href="#contact"
+              className="inline-flex items-center gap-2 bg-ink px-5 py-3 text-sm font-semibold text-paper transition-colors hover:bg-flare"
             >
-              <dt className="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-mint">
-                {item.label}
-              </dt>
-              <dd className="mt-1.5 text-pretty text-sm leading-snug text-muted transition-colors duration-300 group-hover:text-paper">
-                {item.value}
-              </dd>
+              Start a conversation
+              <Icon icon="solar:arrow-down-linear" className="h-4 w-4" aria-hidden="true" />
+            </a>
+            <a
+              href="#work"
+              className="inline-flex items-center gap-2 border border-ink px-5 py-3 text-sm font-semibold text-ink transition-colors hover:bg-ink hover:text-paper"
+            >
+              See deployments
+            </a>
+          </div>
+        </div>
+
+        <dl className="on-ink self-start bg-ink p-6 text-paper sm:p-8">
+          <p className="font-mono text-xs text-flare-bright">Current deployment</p>
+          {nowStrip.map((item) => (
+            <div key={item.label} data-fade className="mt-5 border-t border-paper/15 pt-4">
+              <dt className="font-mono text-xs text-[#B9B2A2]">{item.label}</dt>
+              <dd className="mt-1 text-pretty">{item.value}</dd>
             </div>
           ))}
+          <p data-fade className="mt-6 border-t border-paper/15 pt-4 text-sm text-paper">
+            {person.availability}.
+          </p>
         </dl>
       </div>
-
-      <ScrollCue />
     </section>
   );
 }

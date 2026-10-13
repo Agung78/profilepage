@@ -17,17 +17,17 @@ export default function Image() {
           flexDirection: "column",
           justifyContent: "center",
           padding: 80,
-          background: "hsl(240, 20%, 4%)",
-          color: "hsl(40, 20%, 95%)",
+          background: "#17150F",
+          color: "#EEE9DE",
         }}
       >
         <div style={{ fontSize: 76, fontWeight: 700, lineHeight: 1.1 }}>
           {person.name}
         </div>
-        <div style={{ fontSize: 38, marginTop: 28, color: "hsl(156, 69%, 55%)" }}>
+        <div style={{ fontSize: 38, marginTop: 28, color: "#E8603B" }}>
           {`${person.currentRole} · ${person.currentCompany}`}
         </div>
-        <div style={{ fontSize: 30, marginTop: 12, color: "hsl(240, 6%, 70%)" }}>
+        <div style={{ fontSize: 30, marginTop: 12, color: "#B9B2A2" }}>
           {`${person.concurrentRole} · ${person.concurrentCompany}`}
         </div>
       </div>

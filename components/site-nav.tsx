@@ -1,249 +1,95 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Icon } from "@/lib/icons";
-import gsap from "gsap";
-import { Monogram } from "@/components/monogram";
-import { useMotionPrefs } from "@/hooks/use-motion-prefs";
-import { HEADER_OFFSET } from "@/lib/motion";
 import { navItems, person } from "@/lib/content";
-import { cn } from "@/lib/utils";
-
-const SECTION_IDS = navItems.map((item) => item.href.slice(1));
 
 export function SiteNav() {
-  const reduceMotion = useMotionPrefs();
-  const [active, setActive] = useState<string>("");
-  const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const progressRef = useRef<HTMLDivElement>(null);
+  const button = useRef<HTMLButtonElement>(null);
 
-  /* Slim scroll-progress indicator. This is a readout of scroll position
-     rather than decoration, so it stays under reduced motion — only the
-     smoothing is dropped (a direct set instead of an eased quickTo). */
-  useEffect(() => {
-    const bar = progressRef.current;
-    if (!bar) return;
-
-    const setScale = reduceMotion
-      ? (value: number) => gsap.set(bar, { scaleX: value })
-      : gsap.quickTo(bar, "scaleX", { duration: 0.25, ease: "power2.out" });
-
-    const onScroll = () => {
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = max > 0 ? window.scrollY / max : 0;
-      setScale(progress);
-    };
-
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, [reduceMotion]);
-
-  /* Active-section highlight. IntersectionObserver rather than a scroll
-     listener so this stays off the main thread during scroll. */
-  useEffect(() => {
-    const sections = SECTION_IDS.map((id) =>
-      document.getElementById(id)
-    ).filter((el): el is HTMLElement => el !== null);
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        if (visible[0]) setActive(visible[0].target.id);
-      },
-      { rootMargin: "-45% 0px -50% 0px" }
-    );
-
-    sections.forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const onScroll = () => {
-      const y = window.scrollY;
-      setScrolled(y > 12);
-      /* In the hero nothing downstream is active yet — otherwise "About"
-         lights up while the visitor is still looking at the title. */
-      if (y < 80) setActive("");
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  /* Escape closes the mobile sheet, and body scroll is locked while it's open. */
   useEffect(() => {
     if (!open) return;
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      setOpen(false);
+      button.current?.focus();
     };
-    document.addEventListener("keydown", onKeyDown);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKeyDown);
-      document.body.style.overflow = "";
-    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
   }, [open]);
 
-  /**
-   * Anchor scrolling with an explicit header offset.
-   *
-   * Routes through the live Lenis instance (`window.__lenis`) when one
-   * exists, so the smooth-scroll engine and the anchor jump never fight each
-   * other. Falls back to native `window.scrollTo` under reduced motion, where
-   * Lenis is never instantiated.
-   */
-  const scrollToSection = useCallback(
-    (event: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-      const target = document.getElementById(href.slice(1));
-      if (!target) return;
-      event.preventDefault();
-      const top =
-        target.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
-
-      if (window.__lenis) {
-        window.__lenis.scrollTo(Math.max(0, top), { duration: 1.1 });
-      } else {
-        window.scrollTo({
-          top: Math.max(0, top),
-          behavior: reduceMotion ? "auto" : "smooth",
-        });
-      }
-      window.history.replaceState(null, "", href);
-      setOpen(false);
-    },
-    [reduceMotion]
-  );
-
   return (
-    <header
-      className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-colors duration-300",
-        scrolled || open
-          ? "border-b border-ink-line/80 bg-ink/85 backdrop-blur-xl"
-          : "border-b border-transparent"
-      )}
-    >
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-line bg-paper/95 backdrop-blur-[2px]">
       <nav
-        aria-label="Primary"
+        aria-label={`${person.shortName} primary`}
         className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8"
       >
-        <a
-          href="#top"
-          onClick={(event) => scrollToSection(event, "#top")}
-          className="flex items-center gap-2.5 rounded-md"
-          aria-label={`${person.shortName} — back to top`}
-        >
-          <Monogram size={30} />
-          <span className="font-mono text-sm font-semibold tracking-tight text-paper">
-            {person.shortName}
-          </span>
+        <a href="#top" className="-my-3 py-3 font-display text-lg text-ink">
+          {person.shortName}
         </a>
 
-        <div className="hidden items-center gap-1 md:flex">
-          {navItems.map((item) => {
-            const isActive = active === item.href.slice(1);
-            return (
-              <a
-                key={item.href}
-                href={item.href}
-                onClick={(event) => scrollToSection(event, item.href)}
-                aria-current={isActive ? "true" : undefined}
-                className={cn(
-                  "relative rounded-md px-3 py-2 text-sm transition-colors duration-300",
-                  isActive ? "text-paper" : "text-subtle hover:text-paper"
-                )}
-              >
+        <ul className="hidden items-center gap-8 text-sm sm:flex">
+          {navItems.map((item) => (
+            <li key={item.href}>
+              <a href={item.href} className="text-ink-soft transition-colors hover:text-flare">
                 {item.label}
-                {/* Scales from the centre rather than fading, so the indicator
-                    reads as travelling between items. */}
-                <span
-                  aria-hidden="true"
-                  className={cn(
-                    "absolute inset-x-3 -bottom-px h-px bg-mint transition-transform duration-300 ease-out",
-                    isActive ? "scale-x-100" : "scale-x-0"
-                  )}
-                />
               </a>
-            );
-          })}
-          <a
-            href={person.resume}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="ml-3 inline-flex items-center gap-2 rounded-md bg-mint px-3.5 py-2 text-sm font-semibold text-ink transition-[background-color,transform] duration-300 hover:-translate-y-0.5 hover:bg-mint-soft"
-          >
-            <Icon icon="solar:download-linear" className="h-4 w-4" aria-hidden="true" />
-            Résumé
-          </a>
-        </div>
+            </li>
+          ))}
+        </ul>
 
         <button
+          ref={button}
           type="button"
-          onClick={() => setOpen((value) => !value)}
+          className="relative -mr-2 flex h-11 w-11 items-center justify-center text-ink sm:hidden"
           aria-expanded={open}
-          aria-controls="mobile-nav"
-          aria-label={open ? "Close menu" : "Open menu"}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-ink-line text-paper transition-colors duration-300 hover:border-mint/40 md:hidden"
+          aria-controls="mobile-menu"
+          onClick={() => setOpen((v) => !v)}
         >
-          {open ? (
-            <Icon icon="solar:close-square-linear" className="h-5 w-5" aria-hidden="true" />
-          ) : (
-            <Icon icon="solar:hamburger-menu-linear" className="h-5 w-5" aria-hidden="true" />
-          )}
+          <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
+          <Icon
+            icon="solar:hamburger-menu-linear"
+            className={`absolute h-6 w-6 transition-[opacity,transform] duration-300 ease-out-quart ${open ? "rotate-90 opacity-0" : "opacity-100"}`}
+            aria-hidden="true"
+          />
+          <Icon
+            icon="solar:close-square-linear"
+            className={`absolute h-6 w-6 transition-[opacity,transform] duration-300 ease-out-quart ${open ? "opacity-100" : "-rotate-90 opacity-0"}`}
+            aria-hidden="true"
+          />
         </button>
       </nav>
 
-      {/* Mobile sheet. */}
+      {/* Always mounted: 0fr -> 1fr height + opacity. `visibility` flips at the
+          end of the transition so closed links leave the tab order / a11y tree. */}
       <div
-        id="mobile-nav"
-        hidden={!open}
-        className="border-t border-ink-line/80 bg-ink/95 backdrop-blur-xl md:hidden"
+        className={`grid bg-paper transition-[grid-template-rows,opacity,visibility] ease-out-quart sm:hidden ${
+          open
+            ? "visible grid-rows-[1fr] border-t border-line opacity-100 duration-300"
+            : "invisible grid-rows-[0fr] border-t border-transparent opacity-0 duration-200"
+        }`}
       >
-        <ul className="mx-auto max-w-6xl px-5 py-3 sm:px-8">
-          {navItems.map((item) => (
-            <li key={item.href}>
+        <ul id="mobile-menu" className="min-h-0 overflow-hidden px-5">
+          {navItems.map((item, i) => (
+            <li
+              key={item.href}
+              className={`border-b border-line/60 transition-[opacity,transform] ease-out-quart last:border-0 ${
+                open ? "translate-y-0 opacity-100 duration-300" : "translate-y-2 opacity-0 duration-150"
+              }`}
+              style={{ transitionDelay: open ? `${80 + i * 40}ms` : "0ms" }}
+            >
               <a
                 href={item.href}
-                onClick={(event) => scrollToSection(event, item.href)}
-                className={cn(
-                  "block rounded-md px-2 py-3 text-base transition-colors duration-200",
-                  active === item.href.slice(1) ? "text-mint" : "text-muted"
-                )}
+                onClick={() => setOpen(false)}
+                className="block py-3.5 font-display text-xl text-ink"
               >
                 {item.label}
               </a>
             </li>
           ))}
-          <li className="pb-2 pt-3">
-            <a
-              href={person.resume}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => setOpen(false)}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-mint px-4 py-3 text-sm font-semibold text-ink"
-            >
-              <Icon icon="solar:download-linear" className="h-4 w-4" aria-hidden="true" />
-              Download résumé (PDF)
-            </a>
-          </li>
         </ul>
       </div>
-
-      {/* Progress rail, pinned to the header's bottom edge. */}
-      <div
-        ref={progressRef}
-        aria-hidden="true"
-        style={{ transform: "scaleX(0)" }}
-        className="h-[2px] origin-left bg-gradient-to-r from-mint via-mint-soft to-signal"
-      />
     </header>
   );
 }
