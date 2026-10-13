@@ -29,7 +29,7 @@ export function SiteNav() {
           {person.shortName}
         </a>
 
-        <ul className="hidden items-center gap-8 text-sm sm:flex">
+        <ul className="hidden items-center gap-8 text-base sm:flex">
           {navItems.map((item) => (
             <li key={item.href}>
               <a href={item.href} className="text-ink-soft transition-colors hover:text-flare">

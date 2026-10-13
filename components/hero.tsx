@@ -65,18 +65,20 @@ export function Hero() {
           </div>
         </div>
 
-        <dl className="on-ink self-start bg-ink p-6 text-paper sm:p-8">
+        <div className="on-ink self-start bg-ink p-6 text-paper sm:p-8">
           <p className="font-mono text-xs text-flare-bright">Current deployment</p>
+          <dl>
           {nowStrip.map((item) => (
             <div key={item.label} data-fade className="mt-5 border-t border-paper/15 pt-4">
               <dt className="font-mono text-xs text-[#B9B2A2]">{item.label}</dt>
               <dd className="mt-1 text-pretty">{item.value}</dd>
             </div>
           ))}
+          </dl>
           <p data-fade className="mt-6 border-t border-paper/15 pt-4 text-sm text-paper">
             {person.availability}.
           </p>
-        </dl>
+        </div>
       </div>
     </section>
   );

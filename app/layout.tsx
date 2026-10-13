@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Fraunces, Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
+import { Splash } from "@/components/splash";
 import { SmoothScroll } from "@/components/smooth-scroll";
 import {
   SITE_URL,
@@ -90,7 +91,7 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  icons: { icon: "/favicon.ico", apple: "/apple-icon" },
+  icons: { icon: "/icon.svg", apple: "/apple-icon" },
 };
 
 /** Person schema, kept in sync with the CV. */
@@ -139,6 +140,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${display.variable} ${sans.variable} ${mono.variable}`}
     >
       {/* No `scroll-smooth` class: Lenis owns smooth scrolling when it is
@@ -146,6 +148,11 @@ export default function RootLayout({
           stutter. Under `prefers-reduced-motion` Lenis never mounts, so
           anchor jumps fall back to plain, instant native scroll. */}
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var d=document.documentElement,k="splash-seen";if(matchMedia("(prefers-reduced-motion: reduce)").matches||sessionStorage.getItem(k))d.dataset.splash="skip";else sessionStorage.setItem(k,"1")}catch(e){}`,
+          }}
+        />
         {/* Reveal wrappers start at opacity 0 once GSAP takes over. If scripts
             never run, this rule guarantees the page is still fully readable. */}
         <noscript>
@@ -163,6 +170,7 @@ export default function RootLayout({
         >
           Skip to content
         </a>
+        <Splash />
         <SmoothScroll>{children}</SmoothScroll>
         {GA_ID && (
           <>
